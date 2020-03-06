@@ -89,7 +89,7 @@ router.get("/courses", jsonParser, (req, res) => {
     }
 
     else if(schoolID != undefined && programID != undefined){ //SCHOOL & PROGRAM QUERY PARAMETERS
-        mysqlHelper.sqlQuery("SELECT * FROM course AS C, schoolrelcourse as SRC, programrelcourse as PRC WHERE C.courseID = SRC.courseID AND C.courseID = PRC.courseID AND SRC.courseID = ? AND PRC.programID = ?", [schoolID, programID], (err, rows) => {
+        mysqlHelper.sqlQuery("SELECT * FROM course AS C, schoolrelcourse as SRC, programrelcourse as PRC WHERE C.courseID = SRC.courseID AND C.courseID = PRC.courseID AND SRC.schoolID = ? AND PRC.programID = ?", [schoolID, programID], (err, rows) => {
             if(err != null){
                 return res.send("Error: " + err)
             }
