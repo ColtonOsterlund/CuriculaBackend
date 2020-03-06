@@ -11,10 +11,16 @@ var jsonParser = bodyParser.json()
 
 //root route request
 router.get("/", (req, res) => {
+
+    res.header("Access-Control-Allow-Origin", "*");
+
     res.send("ROOT")
 })
 
 router.get("/courses", jsonParser, (req, res) => {
+
+    
+    res.header("Access-Control-Allow-Origin", "*");
 
     var schoolID = req.query.schoolID;
     var programID = req.query.programID;
@@ -185,6 +191,9 @@ router.get("/courses", jsonParser, (req, res) => {
 
 router.get("/schools", jsonParser, (req, res) => {
 
+    
+    res.header("Access-Control-Allow-Origin", "*");
+
     var schoolID = req.query.schoolID;
 
     if(schoolID == undefined){ //NO QUERY PARAM
@@ -233,6 +242,9 @@ router.get("/schools", jsonParser, (req, res) => {
 })
 
 router.get("/programs", jsonParser, (req, res) => {
+
+    
+    res.header("Access-Control-Allow-Origin", "*");
 
     var schoolID = req.query.schoolID;
     var programID = req.query.programID;

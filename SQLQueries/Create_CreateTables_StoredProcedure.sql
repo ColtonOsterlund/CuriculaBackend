@@ -112,3 +112,5 @@ FOREIGN KEY(courseID) REFERENCES course(courseID)
 END $$
  
 DELIMITER ;
+
+CALL CreateTables();
