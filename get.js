@@ -18,8 +18,9 @@ router.get("/courses", jsonParser, (req, res) => {
 
     var schoolID = req.query.schoolID;
     var programID = req.query.programID;
+    var courseID = req.query.courseID;
 
-    if(schoolID == undefined && programID == undefined){ //NO QUERY PARAMETERS
+    if(schoolID == undefined && programID == undefined && courseID == undefined){ //NO QUERY PARAMETERS
         mysqlHelper.sqlQuery("SELECT * FROM course", null, (err, rows) => {
             if(err != null){
                 return res.send("Error: " + err)
@@ -42,7 +43,7 @@ router.get("/courses", jsonParser, (req, res) => {
         });
     }
 
-    else if(schoolID != undefined && programID == undefined){ //SCHOOL QUERY PARAMETER
+    else if(schoolID != undefined && programID == undefined && courseID == undefined){ //SCHOOL QUERY PARAMETER
         mysqlHelper.sqlQuery("SELECT * FROM course AS C, schoolrelcourse as SRC WHERE C.courseID = SRC.courseID AND SRC.schoolID = ?", [schoolID], (err, rows) => {
             if(err != null){
                 return res.send("Error: " + err)
@@ -65,7 +66,7 @@ router.get("/courses", jsonParser, (req, res) => {
         });
     }
 
-    else if(schoolID == undefined && programID != undefined){ //PROGAM QUERY PARAMETER
+    else if(schoolID == undefined && programID != undefined && courseID == undefined){ //PROGAM QUERY PARAMETER
         mysqlHelper.sqlQuery("SELECT * FROM course AS C, programrelcourse as PRC WHERE C.courseID = PRC.courseID AND PRC.programID = ?", [programID], (err, rows) => {
             if(err != null){
                 return res.send("Error: " + err)
@@ -88,8 +89,77 @@ router.get("/courses", jsonParser, (req, res) => {
         });
     }
 
-    else if(schoolID != undefined && programID != undefined){ //SCHOOL & PROGRAM QUERY PARAMETERS
+    else if(schoolID != undefined && programID != undefined && courseID == undefined){ //SCHOOL & PROGRAM QUERY PARAMETERS
         mysqlHelper.sqlQuery("SELECT * FROM course AS C, schoolrelcourse as SRC, programrelcourse as PRC WHERE C.courseID = SRC.courseID AND C.courseID = PRC.courseID AND SRC.schoolID = ? AND PRC.programID = ?", [schoolID, programID], (err, rows) => {
+            if(err != null){
+                return res.send("Error: " + err)
+            }
+            else{
+                var jsonObjects = []
+                
+                rows.forEach(function(course){
+                    var courseObject = {
+                        courseName: course.courseName,
+                        courseID: course.courseID,
+                        level: course.level
+                    }
+
+                    jsonObjects.push(course);
+                })
+
+                return res.send(JSON.stringify(jsonObjects))
+            }
+        });
+    }
+
+    else if(schoolID == undefined && programID == undefined && courseID != undefined){ //COURSE QUERY PARAMETERS
+        mysqlHelper.sqlQuery("SELECT * FROM course AS C WHERE C.courseID = ?", [courseID], (err, rows) => {
+            if(err != null){
+                return res.send("Error: " + err)
+            }
+            else{
+                var jsonObjects = []
+                
+                rows.forEach(function(course){
+                    var courseObject = {
+                        courseName: course.courseName,
+                        courseID: course.courseID,
+                        level: course.level
+                    }
+
+                    jsonObjects.push(course);
+                })
+
+                return res.send(JSON.stringify(jsonObjects))
+            }
+        });
+    }
+
+    else if(schoolID != undefined && programID == undefined && courseID != undefined){ //SCHOOL & COURSE QUERY PARAMETERS
+        mysqlHelper.sqlQuery("SELECT * FROM course AS C, schoolrelcourse AS SRC WHERE SRC.courseID = C.courseID AND SRC.schoolID = ? AND C.courseID = ?", [schoolID, courseID], (err, rows) => {
+            if(err != null){
+                return res.send("Error: " + err)
+            }
+            else{
+                var jsonObjects = []
+                
+                rows.forEach(function(course){
+                    var courseObject = {
+                        courseName: course.courseName,
+                        courseID: course.courseID,
+                        level: course.level
+                    }
+
+                    jsonObjects.push(course);
+                })
+
+                return res.send(JSON.stringify(jsonObjects))
+            }
+        });
+    }
+
+    else if(schoolID != undefined && programID != undefined && courseID != undefined){ //SCHOOL & COURSE & PROGRAM QUERY PARAMETERS
+        mysqlHelper.sqlQuery("SELECT * FROM course AS C, schoolrelcourse AS SRC, programrelcourse AS PRC WHERE PRC.courseID = C.courseID AND SRC.courseID = C.courseID AND SRC.schoolID = ? AND PRC.programID = ? AND C.courseID = ?", [schoolID, programID, courseID], (err, rows) => {
             if(err != null){
                 return res.send("Error: " + err)
             }
