@@ -251,7 +251,7 @@ router.get("/programs", jsonParser, (req, res) => {
                         programID: program.programID
                     }
 
-                    jsonObjects.push(progam);
+                    jsonObjects.push(program);
                 })
 
                 return res.send(JSON.stringify(jsonObjects))
@@ -273,7 +273,7 @@ router.get("/programs", jsonParser, (req, res) => {
                         programID: program.programID
                     }
 
-                    jsonObjects.push(progam);
+                    jsonObjects.push(program);
                 })
 
                 return res.send(JSON.stringify(jsonObjects))
@@ -295,7 +295,7 @@ router.get("/programs", jsonParser, (req, res) => {
                         programID: program.programID
                     }
 
-                    jsonObjects.push(progam);
+                    jsonObjects.push(program);
                 })
 
                 return res.send(JSON.stringify(jsonObjects))
@@ -317,7 +317,7 @@ router.get("/programs", jsonParser, (req, res) => {
                         programID: program.programID
                     }
 
-                    jsonObjects.push(progam);
+                    jsonObjects.push(program);
                 })
 
                 return res.send(JSON.stringify(jsonObjects))
