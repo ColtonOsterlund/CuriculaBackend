@@ -232,6 +232,99 @@ router.get("/schools", jsonParser, (req, res) => {
     }
 })
 
+router.get("/programs", jsonParser, (req, res) => {
 
+    var schoolID = req.query.schoolID;
+    var programID = req.query.programID;
+
+    if(schoolID == undefined && progamID == undefined){
+        mysqlHelper.sqlQuery("SELECT * FROM program", null, (err, rows) => {
+            if(err != null){
+                return res.send("Error: " + err)
+            }
+            else{
+                var jsonObjects = []
+                
+                rows.forEach(function(program){
+                    var courseObject = {
+                        programName: program.programName,
+                        programID: program.programID
+                    }
+
+                    jsonObjects.push(progam);
+                })
+
+                return res.send(JSON.stringify(jsonObjects))
+            }
+        });
+    }
+
+    else if(schoolID != undefined && programID == undefined){
+        mysqlHelper.sqlQuery("SELECT * FROM program AS P, schoolrelprogram AS SRP WHERE SRP.programID = P.programID AND SRP.schoolID = ?", [schoolID], (err, rows) => {
+            if(err != null){
+                return res.send("Error: " + err)
+            }
+            else{
+                var jsonObjects = []
+                
+                rows.forEach(function(program){
+                    var courseObject = {
+                        programName: program.programName,
+                        programID: program.programID
+                    }
+
+                    jsonObjects.push(progam);
+                })
+
+                return res.send(JSON.stringify(jsonObjects))
+            }
+        });
+    }
+
+    else if(schoolID == undefined && programID != undefined){
+        mysqlHelper.sqlQuery("SELECT * FROM program WHERE program.programID = ?", [programID], (err, rows) => {
+            if(err != null){
+                return res.send("Error: " + err)
+            }
+            else{
+                var jsonObjects = []
+                
+                rows.forEach(function(program){
+                    var courseObject = {
+                        programName: program.programName,
+                        programID: program.programID
+                    }
+
+                    jsonObjects.push(progam);
+                })
+
+                return res.send(JSON.stringify(jsonObjects))
+            }
+        });
+    }
+
+    else if(schoolID != undefined && programID != undefined){
+        mysqlHelper.sqlQuery("SELECT * FROM program AS P, schoolrelprogram AS SRP WHERE SRP.programID = P.programID AND p.programID = ? AND SRP.schoolID = ?", [programID, schoolID], (err, rows) => {
+            if(err != null){
+                return res.send("Error: " + err)
+            }
+            else{
+                var jsonObjects = []
+                
+                rows.forEach(function(program){
+                    var courseObject = {
+                        programName: program.programName,
+                        programID: program.programID
+                    }
+
+                    jsonObjects.push(progam);
+                })
+
+                return res.send(JSON.stringify(jsonObjects))
+            }
+        });
+    }
+
+})
 
 module.exports = router //exports router out of this file 
