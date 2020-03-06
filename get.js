@@ -113,5 +113,55 @@ router.get("/courses", jsonParser, (req, res) => {
 
 })
 
+router.get("/schools", jsonParser, (req, res) => {
+
+    var schoolID = req.query.schoolID;
+
+    if(schoolID == undefined){ //NO QUERY PARAM
+        mysqlHelper.sqlQuery("SELECT * FROM school", null, (err, rows) => {
+            if(err != null){
+                return res.send("Error: " + err)
+            }
+            else{
+                var jsonObjects = []
+                
+                rows.forEach(function(school){
+                    var courseObject = {
+                        schoolName: school.schoolName,
+                        schoolID: school.schoolID
+                    }
+
+                    jsonObjects.push(school);
+                })
+
+                return res.send(JSON.stringify(jsonObjects))
+            }
+        });
+    }
+
+    if(schoolID != undefined){ //SCHOOLID QUERY PARAM
+        mysqlHelper.sqlQuery("SELECT * FROM school WHERE school.schoolID = ?", [schoolID], (err, rows) => {
+            if(err != null){
+                return res.send("Error: " + err)
+            }
+            else{
+                var jsonObjects = []
+                
+                rows.forEach(function(school){
+                    var courseObject = {
+                        schoolName: school.schoolName,
+                        schoolID: school.schoolID
+                    }
+
+                    jsonObjects.push(school);
+                })
+
+                return res.send(JSON.stringify(jsonObjects))
+            }
+        });
+    }
+}
+
+
 
 module.exports = router //exports router out of this file 
