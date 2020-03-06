@@ -5,16 +5,20 @@ BEGIN
   
   CREATE TABLE IF NOT EXISTS school (
 schoolName VARCHAR(40),
-PRIMARY KEY(schoolName)
+schoolID VARCHAR(128),
+PRIMARY KEY(schoolID)
 );
 
 CREATE TABLE IF NOT EXISTS program (
-programName VARCHAR(40) PRIMARY KEY
+programName VARCHAR(40),
+programID VARCHAR(128), 
+PRIMARY KEY(programID)
 );
 
 CREATE TABLE IF NOT EXISTS topicTag (
 tagName VARCHAR(40),
-PRIMARY KEY(tagName)
+tagID VARCHAR(128),
+PRIMARY KEY(tagID)
 );
 
 CREATE TABLE IF NOT EXISTS course (
@@ -31,9 +35,9 @@ firstName VARCHAR(40),
 lastName VARCHAR(40),
 email VARCHAR(40),
 password VARCHAR(40),
-schoolName VARCHAR(40),
+schoolID VARCHAR(128),
 PRIMARY KEY(userID),
-FOREIGN KEY(schoolName) REFERENCES school(schoolName)
+FOREIGN KEY(schoolID) REFERENCES school(schoolID)
 );
 
 CREATE TABLE IF NOT EXISTS content(
@@ -50,19 +54,19 @@ FOREIGN KEY(posterID) REFERENCES user(userID)
 );
 
 CREATE TABLE IF NOT EXISTS programRelCourse(
-programName VARCHAR(40),
+programID VARCHAR(128),
 courseID VARCHAR(128),
-PRIMARY KEY(programName, courseID),
-FOREIGN KEY(programName) REFERENCES program(programName),
+PRIMARY KEY(programID, courseID),
+FOREIGN KEY(programID) REFERENCES program(programID),
 FOREIGN KEY(courseID) REFERENCES course(courseID)
 );
 
 CREATE TABLE IF NOT EXISTS contentRelTag(
 contentID VARCHAR(128),
-tagName VARCHAR(40),
-PRIMARY KEY(contentID, tagName),
+tagid VARCHAR(128),
+PRIMARY KEY(contentID, tagID),
 FOREIGN KEY(contentID) REFERENCES content(videoID),
-FOREIGN KEY(tagName) REFERENCES topicTag(tagName)
+FOREIGN KEY(tagID) REFERENCES topicTag(tagID)
 );
 
 CREATE TABLE IF NOT EXISTS courseRelEquivalentCourse(
@@ -75,26 +79,26 @@ FOREIGN KEY(relatedCourseID) REFERENCES course(courseID)
 
 CREATE TABLE IF NOT EXISTS userRelMajor(
 userID VARCHAR(128),
-programName VARCHAR(40),
-PRIMARY KEY(userID, programName),
+programID VARCHAR(128),
+PRIMARY KEY(userID, programID),
 FOREIGN KEY(userID) REFERENCES user(userID),
-FOREIGN KEY(programName) REFERENCES program(programName)
+FOREIGN KEY(programID) REFERENCES program(programID)
 );
 
 CREATE TABLE IF NOT EXISTS userRelMinor(
 userID VARCHAR(128),
-programName VARCHAR(40),
-PRIMARY KEY(userID, programName),
+programID VARCHAR(128),
+PRIMARY KEY(userID, programID),
 FOREIGN KEY(userID) REFERENCES user(userID),
-FOREIGN KEY(programName) REFERENCES program(programName)
+FOREIGN KEY(programID) REFERENCES program(programID)
 );
 
 CREATE TABLE IF NOT EXISTS schoolRelProgram(
-schoolName varchar(40),
-programName varchar(40),
-PRIMARY KEY(schoolName, programName),
-FOREIGN KEY(schoolName) REFERENCES school(schoolName),
-FOREIGN KEY(programName) REFERENCES program(programName)
+schoolID varchar(128),
+programID varchar(128),
+PRIMARY KEY(schoolID, programID),
+FOREIGN KEY(schoolID) REFERENCES school(schoolID),
+FOREIGN KEY(programID) REFERENCES program(programID)
 );
   
 END $$
