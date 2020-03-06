@@ -237,7 +237,7 @@ router.get("/programs", jsonParser, (req, res) => {
     var schoolID = req.query.schoolID;
     var programID = req.query.programID;
 
-    if(schoolID == undefined && progamID == undefined){
+    if(schoolID == undefined && programID == undefined){
         mysqlHelper.sqlQuery("SELECT * FROM program", null, (err, rows) => {
             if(err != null){
                 return res.send("Error: " + err)
