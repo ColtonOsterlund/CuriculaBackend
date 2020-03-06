@@ -100,6 +100,14 @@ PRIMARY KEY(schoolID, programID),
 FOREIGN KEY(schoolID) REFERENCES school(schoolID),
 FOREIGN KEY(programID) REFERENCES program(programID)
 );
+
+CREATE TABLE IF NOT EXISTS schoolRelCourse(
+schoolID varchar(128),
+courseID varchar(128),
+PRIMARY KEY(schoolID, courseID),
+FOREIGN KEY(schoolID) REFERENCES school(schoolID),
+FOREIGN KEY(courseID) REFERENCES course(courseID) 
+);
   
 END $$
  
