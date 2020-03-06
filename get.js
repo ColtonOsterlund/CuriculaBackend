@@ -160,7 +160,7 @@ router.get("/schools", jsonParser, (req, res) => {
             }
         });
     }
-}
+})
 
 
 
