@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken') //used for web token authentication
 const getRouter = require('./get.js')
 const postRouter = require('./post.js')
 const mysqlHelper = require('./MySQLHelper.js')
+var cors = require('cors')
 
 
 const server = express() //set server = to a new instance of express
@@ -15,6 +16,7 @@ dotenv.config() //CONFIGURE ENVIRONMENT VARIABLES
 server.use(bodyParser.json());
 server.use(getRouter)
 server.use(postRouter)
+server.use(cors())
 
 
 function mySQLConnectionTest(){
@@ -39,6 +41,14 @@ function mySQLCreateDatabaseTables(){
     mysqlHelper.sqlQuery("CALL CreateTables();", null, (err, rows) => {
         if(err != null){
             console.log("Error while calling CreateTables() stored procedure in database: " + err)
+        }
+    })
+}
+
+function mySQLCreateCommentDatabaseTables(){
+    mysqlHelper.sqlQuery("CALL CreateCommentTables();", null, (err, rows) => {
+        if(err != null){
+            console.log("Error while calling CreateCommentTables() stored procedure in database: " + err)
         }
     })
 }

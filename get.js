@@ -11,10 +11,12 @@ var jsonParser = bodyParser.json()
 
 //root route request
 router.get("/", (req, res) => {
+
     res.send("ROOT")
 })
 
 router.get("/courses", jsonParser, (req, res) => {
+
 
     var schoolID = req.query.schoolID;
     var programID = req.query.programID;
