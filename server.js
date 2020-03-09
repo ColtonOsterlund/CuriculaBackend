@@ -45,6 +45,14 @@ function mySQLCreateDatabaseTables(){
     })
 }
 
+function mySQLCreateCommentDatabaseTables(){
+    mysqlHelper.sqlQuery("CALL CreateCommentTables();", null, (err, rows) => {
+        if(err != null){
+            console.log("Error while calling CreateCommentTables() stored procedure in database: " + err)
+        }
+    })
+}
+
 
 const PORT = process.env.PORT || 3000 //use PORT environment variable (used by Heroku when we deploy) if available, if not - default to port 3000
 server.listen(PORT, () => { //server listening on localhost:3002 for now - this will be changed upon deployment
