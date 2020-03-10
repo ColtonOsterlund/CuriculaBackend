@@ -7,6 +7,7 @@ const dotenv = require('dotenv') //used to configure the environment variables
 dotenv.config() //CONFIGURE ENVIRONMENT VARIABLES
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const uuid = require('uuid')
 
 const router = express.Router()
 
@@ -68,7 +69,7 @@ router.post('/user/register', (req, res) => {
 	//use hashSync so that it is synchronous and finished the hash before the next code executes - implements a callback function itself
     
     
-    var userID = 1; //TODO: GENERATE UUID FOR USER
+    var userID = uuid.v4();
 
 	mysqlHelper.sqlQuery("SELECT * FROM user WHERE username = ? OR email = ?", [username, email], (err, objects) => {
 

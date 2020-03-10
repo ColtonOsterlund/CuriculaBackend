@@ -27,4 +27,4 @@ function encrypt(text){
 
 
  module.exports.encrypt = encrypt;
- modules.exports.decrypt = decrypt; 
+ module.exports.decrypt = decrypt; 
