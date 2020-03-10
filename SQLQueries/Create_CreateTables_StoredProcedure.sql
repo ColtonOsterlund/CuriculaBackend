@@ -108,6 +108,11 @@ PRIMARY KEY(schoolID, courseID),
 FOREIGN KEY(schoolID) REFERENCES school(schoolID),
 FOREIGN KEY(courseID) REFERENCES course(courseID) 
 );
+
+CREATE TABLE IF NOT EXISTS blacklistedjwts(
+jwt VARCHAR(128),
+deleteNext VARCHAR(1)
+);
   
 END $$
  

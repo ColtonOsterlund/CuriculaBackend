@@ -3,6 +3,7 @@
 const express = require('express')
 const mysqlHelper = require('./MySQLHelper.js')
 var bodyParser = require('body-parser')
+var authorization = require('./authorization.js')
 
 const router = express.Router()
 

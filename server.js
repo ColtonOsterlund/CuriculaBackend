@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken') //used for web token authentication
 const getRouter = require('./get.js')
 const postRouter = require('./post.js')
 const mysqlHelper = require('./MySQLHelper.js')
-var cors = require('cors')
+var cors = require('cors') //THIS IS SUPPOSED TO SOLVE CORS ISSUE BUT IS NOT WORKING - LOOK MORE INTO THIS
 
 
 const server = express() //set server = to a new instance of express
@@ -16,7 +16,7 @@ dotenv.config() //CONFIGURE ENVIRONMENT VARIABLES
 server.use(bodyParser.json());
 server.use(getRouter)
 server.use(postRouter)
-server.use(cors())
+server.use(cors()) //THIS IS SUPPOSED TO SOLVE CORS ISSUE BUT IS NOT WORKING - LOOK MORE INTO THIS
 
 
 function mySQLConnectionTest(){
@@ -53,6 +53,52 @@ server.listen(PORT, () => { //server listening on localhost:3002 for now - this 
     //uncomment to test MySQL connection and create tables if not exists
     //mySQLConnectionTest();
     //mySQLCreateDatabaseTables();
+
+    setInterval(function() { //clear blacklistedjwts table every hour
+
+
+
+		mysqlHelper.sqlQuery("DELETE FROM blacklistedjwts WHERE deleteNext = ?", "1", (err, rows) => {
+
+
+			if(err != null){
+				console.log("Error deleting from blacklistedjwts table")
+			}
+			else{
+				console.log("Success deleting from blacklistedjwts table")
+
+				mysqlHelper.sqlQuery("SELECT * FROM blacklistedjwts WHERE deleteNext = ?", "0", (err, rows) => { //set all jwts blacklisted with deleteNext = 0 to deleteNext = 1
+
+					if(err != null){
+						console.log("Error setting deleteNext = 1 on jwts in blacklistedjwts table")
+					}
+					else{
+
+						rows.forEach(function(jwt){
+
+
+							mysqlHelper.sqlQuery("UPDATE blacklistedjwts SET deleteNext = ? WHERE jwt = ?", ["1", jwt["jwt"]], (err, rows) => { //set all jwts blacklisted with deleteNext = 0 to deleteNext = 1
+
+								if(err != null){
+									console.log("Error setting deleteNext = 1 on jwts in blacklistedjwts table")
+								}
+								else{
+									console.log("Success setting deleteNext = 1 on jwts in blacklistedjwts table")
+								}
+						
+							})
+
+						})
+
+					}
+			
+				})
+
+			}
+	
+		})
+
+	}, 3600 * 1000) //3600 seconds = 1h (x 1000 because it is measured in miliseconds)
 
 })
 
