@@ -17,7 +17,7 @@ dotenv.config() //CONFIGURE ENVIRONMENT VARIABLES
 server.use(bodyParser.json());
 server.use(getRouter)
 server.use(postRouter)
-server.use(authenticationRouter)
+server.use(authenticationRouter.router)
 server.use(cors()) //THIS IS SUPPOSED TO SOLVE CORS ISSUE BUT IS NOT WORKING - LOOK MORE INTO THIS
 
 
