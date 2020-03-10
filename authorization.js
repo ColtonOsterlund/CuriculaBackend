@@ -49,12 +49,12 @@ function authorizeUser(req, res, next){
  }
 
 
-router.get("/user/authenticate", authorizeUser, (req, res) => {
+router.get("/user/authenticate", jsonParser, authorizeUser, (req, res) => {
 	//sends back "Access Denied" if JWT is not valid/null and "Authenticated" if JWT is valid
 	res.send("Authenticated")
 })
 
-router.post('/user/register', (req, res) => { 
+router.post('/user/register', jsonParser, (req, res) => { 
 	console.log(req.body)
 	
 
@@ -106,7 +106,7 @@ router.post('/user/register', (req, res) => {
  })
 
 
-router.post('/user/login', (req, res) => {
+router.post('/user/login', jsonParser, (req, res) => {
 	
 	var email = req.body.email
 	var password = req.body.password
@@ -164,7 +164,7 @@ router.post('/user/login', (req, res) => {
 
  })
 
-router.post('/user/logout', authorizeUser, (req, res) => {
+router.post('/user/logout', jsonParser, authorizeUser, (req, res) => {
 	
 	const token = req.header("auth-token")
 
