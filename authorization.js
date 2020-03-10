@@ -89,7 +89,15 @@ router.post('/user/register', (req, res) => {
 					return
 				}
 
-				res.header('user-id', userID).send("User created: " + username) //THIS WILL SEND BACK UUID
+                var jsonObjects = []
+
+                var registrationObject = {
+                    userUUID: userID
+                }
+
+                jsonObjects.push(registrationObject);
+
+				return res.send(JSON.stringify(jsonObjects)) //this sends back the UUID
 			})
 		}
 	})
@@ -138,9 +146,18 @@ router.post('/user/login', (req, res) => {
 		//console.log("got here 4")
 
 		//create and assign JWT
-		token = jwt.sign({_id: objects[0].userID}, process.env.TOKEN_SECRET, {expiresIn: '1h'}) //change the id from username to the userID
-		res.header('auth-token', token).header('user-id', objects[0].userID).send("Logged In")
+        token = jwt.sign({_id: objects[0].userID}, process.env.TOKEN_SECRET, {expiresIn: '1h'}) //change the id from username to the userID
+        
+        var jsonObjects = []
 
+        var loginObject = {
+            userUUID: objects[0].userID,
+            jwt: token
+        }
+
+        jsonObjects.push(loginObject);
+
+        return res.send(JSON.stringify(jsonObjects)) //this sends back the UUID
 
 	})
 

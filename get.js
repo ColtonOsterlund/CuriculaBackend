@@ -16,6 +16,8 @@ router.get("/", (req, res) => {
     res.send("ROOT")
 })
 
+
+
 router.get("/courses", jsonParser, (req, res) => {
 
 
