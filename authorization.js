@@ -163,4 +163,4 @@ router.post('/user/logout', authorizeUser, (req, res) => {
 
 
  module.exports.router = router;
- module.exports.authorizeUser = authoriseUser;
+ module.exports.authorizeUser = authorizeUser;
