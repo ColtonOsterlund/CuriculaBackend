@@ -25,6 +25,8 @@ const comment = require('../commentMS/comment.js');
 	}
 	
 	
+	module.exports.insertCommentToDatabase = insertCommentToDatabase;
+	
 	
 	
 	
