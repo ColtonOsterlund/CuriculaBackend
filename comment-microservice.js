@@ -23,4 +23,3 @@ function createVoteEvent(newEvent) {
 
 module.exports.createCommentEvent = createCommentEvent;
 module.exports.createVoteEvent = createVoteEvent;
-
