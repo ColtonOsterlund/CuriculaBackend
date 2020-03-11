@@ -33,7 +33,7 @@ function authorizeUser(req, res, next){
 				console.log("error case")
 				return res.status(401).send("Access Denied")
 			}	
-			else if(rows[0] != undefined){
+			else if(rows[0] != undefined){	//TODO this should be "=="?
 				console.log("rows undefined case")
 				return res.status(400).send("Invalid Token")
 			}
@@ -46,6 +46,11 @@ function authorizeUser(req, res, next){
 	 }catch(err){
 		 return res.status(400).send("Invalid Token")
 	 }
+ }
+
+ function authorizeUserTesting(req, res, next) {
+	 req.user = req.body.user
+	 next()
  }
 
 
@@ -214,4 +219,4 @@ router.post('/user/logout', jsonParser, authorizeUser, (req, res) => {
 
 
  module.exports.router = router;
- module.exports.authorizeUser = authorizeUser;
+ module.exports.authorizeUser = authorizeUserTesting;
