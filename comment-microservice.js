@@ -1,7 +1,6 @@
 const express = require('express')
 const mysqlHelper = require('./MySQLHelper.js')
 
-<<<<<<< HEAD
 function createCommentEvent(newEvent) {
     newEvent.timeStamp = Date.now()
     newEvent.eventID = 123  //TODO generate unique eventID (or let SQL)
@@ -24,5 +23,4 @@ function createVoteEvent(newEvent) {
 
 module.exports.createCommentEvent = createCommentEvent;
 module.exports.createVoteEvent = createVoteEvent;
-=======
->>>>>>> Added POST endpoints for comments and upvotes. Added microservice stubs to handle the endpoint
+
