@@ -14,6 +14,7 @@ PRIMARY KEY(commentID)
 
 CREATE TABLE IF NOT EXISTS parentComment (
 parentID VARCHAR(128),
+postID VARCHAR (128),
 FOREIGN KEY(parentID) REFERENCES comments(commentID)
 );
 
