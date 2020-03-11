@@ -7,6 +7,7 @@ const dotenv = require('dotenv') //used to configure the environment variables
 dotenv.config() //CONFIGURE ENVIRONMENT VARIABLES
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
+const uuid = require('uuid')
 
 const router = express.Router()
 
@@ -48,12 +49,12 @@ function authorizeUser(req, res, next){
  }
 
 
-router.get("/user/authenticate", authorizeUser, (req, res) => {
+router.get("/user/authenticate", jsonParser, authorizeUser, (req, res) => {
 	//sends back "Access Denied" if JWT is not valid/null and "Authenticated" if JWT is valid
 	res.send("Authenticated")
 })
 
-router.post('/user/register', (req, res) => { 
+router.post('/user/register', jsonParser, (req, res) => { 
 	console.log(req.body)
 	
 
@@ -68,7 +69,7 @@ router.post('/user/register', (req, res) => {
 	//use hashSync so that it is synchronous and finished the hash before the next code executes - implements a callback function itself
     
     
-    var userID = 1; //TODO: GENERATE UUID FOR USER
+    var userID = uuid.v4();
 
 	mysqlHelper.sqlQuery("SELECT * FROM user WHERE username = ? OR email = ?", [username, email], (err, objects) => {
 
@@ -105,7 +106,7 @@ router.post('/user/register', (req, res) => {
  })
 
 
-router.post('/user/login', (req, res) => {
+router.post('/user/login', jsonParser, (req, res) => {
 	
 	var email = req.body.email
 	var password = req.body.password
@@ -163,7 +164,7 @@ router.post('/user/login', (req, res) => {
 
  })
 
-router.post('/user/logout', authorizeUser, (req, res) => {
+router.post('/user/logout', jsonParser, authorizeUser, (req, res) => {
 	
 	const token = req.header("auth-token")
 
