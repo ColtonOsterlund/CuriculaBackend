@@ -50,11 +50,19 @@ function authorizeUser(req, res, next){
 
 
 router.get("/user/authenticate", jsonParser, authorizeUser, (req, res) => {
+
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
 	//sends back "Access Denied" if JWT is not valid/null and "Authenticated" if JWT is valid
 	res.send("Authenticated")
 })
 
 router.post('/user/register', jsonParser, (req, res) => { 
+
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
 	console.log(req.body)
 
 	var username = req.body.username
@@ -138,6 +146,9 @@ router.post('/user/register', jsonParser, (req, res) => {
 
 
 router.post('/user/login', jsonParser, (req, res) => {
+
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 	
 	var email = req.body.email
 	var password = req.body.password
@@ -196,6 +207,9 @@ router.post('/user/login', jsonParser, (req, res) => {
  })
 
 router.post('/user/logout', jsonParser, authorizeUser, (req, res) => {
+
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 	
 	const token = req.header("auth-token")
 

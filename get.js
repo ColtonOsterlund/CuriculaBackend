@@ -19,8 +19,10 @@ router.get("/", (req, res) => {
 
 
 
-router.get("/courses", jsonParser, cors, (req, res) => {
+router.get("/courses", jsonParser, (req, res) => {
 
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
     var schoolID = req.query.schoolID;
     var programID = req.query.programID;
@@ -189,7 +191,10 @@ router.get("/courses", jsonParser, cors, (req, res) => {
 
 })
 
-router.get("/schools", jsonParser, cors, (req, res) => {
+router.get("/schools", jsonParser, (req, res) => {
+
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
     var schoolID = req.query.schoolID;
 
@@ -238,7 +243,10 @@ router.get("/schools", jsonParser, cors, (req, res) => {
     }
 })
 
-router.get("/programs", jsonParser, cors, (req, res) => {
+router.get("/programs", jsonParser, (req, res) => {
+
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
     var schoolID = req.query.schoolID;
     var programID = req.query.programID;
