@@ -104,7 +104,7 @@ router.post('/user/register', jsonParser, (req, res) => {
                 }
 
                 if(majorProgramID != undefined){
-                    mysqlHelper.sqlQuery("INSERT INTO userRelMajor(userID, programID) VALUES (?, ?)", [userID, programID], (err, objects) =>{
+                    mysqlHelper.sqlQuery("INSERT INTO userRelMajor(userID, programID) VALUES (?, ?)", [userID, majorProgramID], (err, objects) =>{
                         if(err){
                             res.send("Server Error")
                             return
@@ -114,7 +114,7 @@ router.post('/user/register', jsonParser, (req, res) => {
                 }
 
                 if(minorProgramID != undefined){
-                    mysqlHelper.sqlQuery("INSERT INTO userRelMinor(userID, programID) VALUES (?, ?)", [userID, programID], (err, objects) =>{
+                    mysqlHelper.sqlQuery("INSERT INTO userRelMinor(userID, programID) VALUES (?, ?)", [userID, minorProgramID], (err, objects) =>{
                         if(err){
                             res.send("Server Error")
                             return
