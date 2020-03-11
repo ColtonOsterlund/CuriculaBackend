@@ -56,10 +56,14 @@ router.get("/user/authenticate", jsonParser, authorizeUser, (req, res) => {
 
 router.post('/user/register', jsonParser, (req, res) => { 
 	console.log(req.body)
-	
 
 	var username = req.body.username
-	var email = req.body.email
+    var email = req.body.email
+    var firstName = req.body.firstName
+    var lastName = req.body.lastName
+    var majorProgramID = req.body.majorProgramID
+    var minorProgramID = req.body.minorProgramID
+    var schoolID = req.body.schoolID
 	var hashedPassword = bcrypt.hashSync(req.body.password, 10, function(err, hash){
 		if(err){
 			console.log("error while hashing password: " + err)
@@ -84,21 +88,50 @@ router.post('/user/register', jsonParser, (req, res) => {
 		}
 		else{
 			//save user to database
-			mysqlHelper.sqlQuery("INSERT INTO user (username, email, password, userID) VALUES (?, ?, ?, ?)", [username, email, hashedPassword, userID], (err, objects) =>{ //TODO: CHANGE THIS TO MATCH OUR DATABASE SCHEMA
+			mysqlHelper.sqlQuery("INSERT INTO user (username, email, password, userID, firstName, lastName) VALUES (?, ?, ?, ?, ?, ?)", [username, email, hashedPassword, userID, firstName, lastName], (err, objects) =>{ //TODO: CHANGE THIS TO MATCH OUR DATABASE SCHEMA
 				if(err){
 					res.send("Server Error")
 					return
-				}
+                }
+                
+                if(schoolID != undefined){
+                    mysqlHelper.sqlQuery("INSERT INTO schoolRelUser(userID, schoolID) VALUES (?, ?)", [userID, schoolID], (err, objects) =>{
+                        if(err){
+                            res.send("Server Error")
+                            return
+                        }
+                    })
+                }
+
+                if(majorProgramID != undefined){
+                    mysqlHelper.sqlQuery("INSERT INTO userRelMajor(userID, programID) VALUES (?, ?)", [userID, programID], (err, objects) =>{
+                        if(err){
+                            res.send("Server Error")
+                            return
+                        }
+        
+                    })
+                }
+
+                if(minorProgramID != undefined){
+                    mysqlHelper.sqlQuery("INSERT INTO userRelMinor(userID, programID) VALUES (?, ?)", [userID, programID], (err, objects) =>{
+                        if(err){
+                            res.send("Server Error")
+                            return
+                        }
+        
+                    })
+                }
 
                 var jsonObjects = []
-
+                
                 var registrationObject = {
                     userUUID: userID
                 }
-
+                
                 jsonObjects.push(registrationObject);
-
-				return res.send(JSON.stringify(jsonObjects)) //this sends back the UUID
+                
+                return res.send(JSON.stringify(jsonObjects)) //this sends back the UUID
 			})
 		}
 	})
