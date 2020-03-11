@@ -109,7 +109,6 @@ router.post('/user/register', jsonParser, (req, res) => {
                             res.send("Server Error")
                             return
                         }
-        
                     })
                 }
 
@@ -119,7 +118,6 @@ router.post('/user/register', jsonParser, (req, res) => {
                             res.send("Server Error")
                             return
                         }
-        
                     })
                 }
 

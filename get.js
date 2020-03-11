@@ -4,6 +4,7 @@ const express = require('express')
 const mysqlHelper = require('./MySQLHelper.js')
 var bodyParser = require('body-parser')
 var authorization = require('./authorization.js')
+var cors = require('cors')
 
 const router = express.Router()
 
@@ -18,7 +19,7 @@ router.get("/", (req, res) => {
 
 
 
-router.get("/courses", jsonParser, (req, res) => {
+router.get("/courses", jsonParser, cors, (req, res) => {
 
 
     var schoolID = req.query.schoolID;
@@ -188,7 +189,7 @@ router.get("/courses", jsonParser, (req, res) => {
 
 })
 
-router.get("/schools", jsonParser, (req, res) => {
+router.get("/schools", jsonParser, cors, (req, res) => {
 
     var schoolID = req.query.schoolID;
 
@@ -237,7 +238,7 @@ router.get("/schools", jsonParser, (req, res) => {
     }
 })
 
-router.get("/programs", jsonParser, (req, res) => {
+router.get("/programs", jsonParser, cors, (req, res) => {
 
     var schoolID = req.query.schoolID;
     var programID = req.query.programID;
