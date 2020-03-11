@@ -19,7 +19,7 @@ function authorizeUser(req, res, next){
 
 	 const token = req.header('auth-token')
 	 if(!token){
-		return res.send("Access Denied")
+		return res.status(401).send("Access Denied");
 	 }
 	 
 	 try{
@@ -31,11 +31,11 @@ function authorizeUser(req, res, next){
 
 			if(err != null){ 
 				console.log("error case")
-				return res.send("Access Denied")
+				return res.status(401).send("Access Denied")
 			}	
 			else if(rows[0] != undefined){
 				console.log("rows undefined case")
-				return res.send("Invalid Token")
+				return res.status(400).send("Invalid Token")
 			}
 			else{
 				req.user = verified //this sets req.user to the payload id from the JWT - this is to identify which user is making the request
@@ -44,7 +44,7 @@ function authorizeUser(req, res, next){
 		})
 
 	 }catch(err){
-		 return res.send("Invalid Token")
+		 return res.status(400).send("Invalid Token")
 	 }
  }
 
@@ -86,7 +86,7 @@ router.post('/user/register', jsonParser, (req, res) => {
 			//save user to database
 			mysqlHelper.sqlQuery("INSERT INTO user (username, email, password, userID) VALUES (?, ?, ?, ?)", [username, email, hashedPassword, userID], (err, objects) =>{ //TODO: CHANGE THIS TO MATCH OUR DATABASE SCHEMA
 				if(err){
-					res.send("Server Error")
+					res.status(501).send("Server Database Query Error")
 					return
 				}
 
