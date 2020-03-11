@@ -27,7 +27,7 @@ router.get("/courses", jsonParser, (req, res) => {
     var courseID = req.query.courseID;
 
     if(schoolID == undefined && programID == undefined && courseID == undefined){ //NO QUERY PARAMETERS
-        mysqlHelper.sqlQuery("SELECT * FROM course", null, (err, rows) => {
+        mysqlHelper.sqlQuery("SELECT * FROM course, schoolRelCourse WHERE schoolRelCourse.courseID = course.courseID", null, (err, rows) => {
             if(err != null){
                 return res.send("Error: " + err)
             }
@@ -38,7 +38,8 @@ router.get("/courses", jsonParser, (req, res) => {
                     var courseObject = {
                         courseName: course.courseName,
                         courseID: course.courseID,
-                        level: course.level
+                        level: course.level,
+                        schoolID: course.schoolID
                     }
 
                     jsonObjects.push(course);
@@ -61,7 +62,8 @@ router.get("/courses", jsonParser, (req, res) => {
                     var courseObject = {
                         courseName: course.courseName,
                         courseID: course.courseID,
-                        level: course.level
+                        level: course.level,
+                        schoolID: course.schoolID
                     }
 
                     jsonObjects.push(course);
@@ -73,7 +75,7 @@ router.get("/courses", jsonParser, (req, res) => {
     }
 
     else if(schoolID == undefined && programID != undefined && courseID == undefined){ //PROGAM QUERY PARAMETER
-        mysqlHelper.sqlQuery("SELECT * FROM course AS C, programrelcourse as PRC WHERE C.courseID = PRC.courseID AND PRC.programID = ?", [programID], (err, rows) => {
+        mysqlHelper.sqlQuery("SELECT * FROM course AS C, programrelcourse as PRC, schoolRelCourse as SRC WHERE C.courseID = PRC.courseID AND PRC.programID = ? AND SRC.courseID = C.courseID", [programID], (err, rows) => {
             if(err != null){
                 return res.send("Error: " + err)
             }
@@ -84,7 +86,8 @@ router.get("/courses", jsonParser, (req, res) => {
                     var courseObject = {
                         courseName: course.courseName,
                         courseID: course.courseID,
-                        level: course.level
+                        level: course.level,
+                        schoolID: course.schoolID
                     }
 
                     jsonObjects.push(course);
@@ -107,7 +110,8 @@ router.get("/courses", jsonParser, (req, res) => {
                     var courseObject = {
                         courseName: course.courseName,
                         courseID: course.courseID,
-                        level: course.level
+                        level: course.level,
+                        schoolID: course.schoolID
                     }
 
                     jsonObjects.push(course);
@@ -119,7 +123,7 @@ router.get("/courses", jsonParser, (req, res) => {
     }
 
     else if(schoolID == undefined && programID == undefined && courseID != undefined){ //COURSE QUERY PARAMETERS
-        mysqlHelper.sqlQuery("SELECT * FROM course AS C WHERE C.courseID = ?", [courseID], (err, rows) => {
+        mysqlHelper.sqlQuery("SELECT * FROM course AS C, schoolRelCourse as SRC WHERE C.courseID = ? AND SRC.courseID = C.courseID", [courseID], (err, rows) => {
             if(err != null){
                 return res.send("Error: " + err)
             }
@@ -130,7 +134,8 @@ router.get("/courses", jsonParser, (req, res) => {
                     var courseObject = {
                         courseName: course.courseName,
                         courseID: course.courseID,
-                        level: course.level
+                        level: course.level,
+                        schoolID: course.schoolID
                     }
 
                     jsonObjects.push(course);
@@ -153,7 +158,8 @@ router.get("/courses", jsonParser, (req, res) => {
                     var courseObject = {
                         courseName: course.courseName,
                         courseID: course.courseID,
-                        level: course.level
+                        level: course.level,
+                        schoolID: course.schoolID
                     }
 
                     jsonObjects.push(course);
@@ -176,7 +182,8 @@ router.get("/courses", jsonParser, (req, res) => {
                     var courseObject = {
                         courseName: course.courseName,
                         courseID: course.courseID,
-                        level: course.level
+                        level: course.level,
+                        schoolID: course.schoolID
                     }
 
                     jsonObjects.push(course);
