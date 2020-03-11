@@ -21,8 +21,6 @@ router.get("/", (req, res) => {
 
 router.get("/courses", jsonParser, (req, res) => {
 
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
     var schoolID = req.query.schoolID;
     var programID = req.query.programID;
@@ -193,9 +191,6 @@ router.get("/courses", jsonParser, (req, res) => {
 
 router.get("/schools", jsonParser, (req, res) => {
 
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-
     var schoolID = req.query.schoolID;
 
     if(schoolID == undefined){ //NO QUERY PARAM
@@ -244,9 +239,6 @@ router.get("/schools", jsonParser, (req, res) => {
 })
 
 router.get("/programs", jsonParser, (req, res) => {
-
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
     var schoolID = req.query.schoolID;
     var programID = req.query.programID;
@@ -340,5 +332,125 @@ router.get("/programs", jsonParser, (req, res) => {
     }
 
 })
+
+
+
+router.get("/videos", jsonParser, (req, res) => {
+
+    var userID = req.query.userID;
+    var courseID = req.query.courseID;
+
+    if(userID == undefined && courseID == undefined){
+        mysqlHelper.sqlQuery("SELECT * FROM content", null, (err, rows) => {
+            if(err != null){
+                return res.send("Error: " + err)
+            }
+            else{
+                var jsonObjects = []
+                
+                rows.forEach(function(video){
+                    var videoObject = {
+                        videoID: video.videoID,
+                        videoLink: video.videoLink,
+                        description: video.description,
+                        datePosted: video.datePosted,
+                        relatedCourseID: video.relatedCourseID,
+                        verifiedFlag: video.verifiedFlag,
+                        posterID: video.posterID
+                    }
+
+                    jsonObjects.push(videoObject);
+                })
+
+                return res.send(JSON.stringify(jsonObjects))
+            }
+        });
+    }
+
+    if(userID == undefined && courseID != undefined){
+        mysqlHelper.sqlQuery("SELECT * FROM content WHERE relatedCourseID = ?", [courseID], (err, rows) => {
+            if(err != null){
+                return res.send("Error: " + err)
+            }
+            else{
+                var jsonObjects = []
+                
+                rows.forEach(function(video){
+                    var videoObject = {
+                        videoID: video.videoID,
+                        videoLink: video.videoLink,
+                        description: video.description,
+                        datePosted: video.datePosted,
+                        relatedCourseID: video.relatedCourseID,
+                        verifiedFlag: video.verifiedFlag,
+                        posterID: video.posterID
+                    }
+
+                    jsonObjects.push(videoObject);
+                })
+
+                return res.send(JSON.stringify(jsonObjects))
+            }
+        });
+
+    }
+
+    if(userID != undefined && courseID == undefined){
+        mysqlHelper.sqlQuery("SELECT * FROM content WHERE posterID = ?", [userID], (err, rows) => {
+            if(err != null){
+                return res.send("Error: " + err)
+            }
+            else{
+                var jsonObjects = []
+                
+                rows.forEach(function(video){
+                    var videoObject = {
+                        videoID: video.videoID,
+                        videoLink: video.videoLink,
+                        description: video.description,
+                        datePosted: video.datePosted,
+                        relatedCourseID: video.relatedCourseID,
+                        verifiedFlag: video.verifiedFlag,
+                        posterID: video.posterID
+                    }
+
+                    jsonObjects.push(videoObject);
+                })
+
+                return res.send(JSON.stringify(jsonObjects))
+            }
+        });
+
+    }
+
+    if(userID != undefined && courseID != undefined){
+        mysqlHelper.sqlQuery("SELECT * FROM content WHERE posterID = ? AND relatedCourseID = ?", [userID, courseID], (err, rows) => {
+            if(err != null){
+                return res.send("Error: " + err)
+            }
+            else{
+                var jsonObjects = []
+                
+                rows.forEach(function(video){
+                    var videoObject = {
+                        videoID: video.videoID,
+                        videoLink: video.videoLink,
+                        description: video.description,
+                        datePosted: video.datePosted,
+                        relatedCourseID: video.relatedCourseID,
+                        verifiedFlag: video.verifiedFlag,
+                        posterID: video.posterID
+                    }
+
+                    jsonObjects.push(videoObject);
+                })
+
+                return res.send(JSON.stringify(jsonObjects))
+            }
+        });
+    }
+   
+})
+
 
 module.exports = router //exports router out of this file 
