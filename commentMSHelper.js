@@ -11,19 +11,19 @@ var jsonParser = bodyParser.json()
 //Probably any and all functions that use comment
 
 //sample of how to insert comment with query
-function insertCommentToDatabase(parentID, commentID, userID, text, counter){
+function insertCommentToDatabase(parentID, commentID, userID, theText, counter){
 	
-	if (parent){//parent comment
+	if (parentID == null){//parent comment
 		var query = "INSERT INTO parentComment(parentID) VALUES (" + commentID + ");";
 	} else{//child comment
-		var query = "INSERT INTO childComment(childID, parentID) VALUES (" + commentID + "," + parentID + ");";
+		var query = "INSERT INTO childComment(childID, parentID) VALUES ("+commentID+","+parentID+");";
 	}
 		
 	//today code obtained from https://tecadmin.net/get-current-date-time-javascript/
 	var today = new Date();
 	var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
 		
-	String query2 = "INSERT INTO comment (commentID, authorUser, datePosted, text, counter) VALUES (" + commentID + "," + userID + "," + date + "," + text + "," + counter + ");"; 
+	String query2 = "INSERT INTO comment (commentID, authorUser, datePosted, text, counter) VALUES (" + commentID+ "," + userID + "," + date + "," + theText + "," + counter + ");"; 
 		
 		
 	//Finally apply query 1 and 2 to database after user creates and after passign all necessary values
@@ -55,9 +55,7 @@ router.post('/comment/parent', jsonParser, (req, res) => {
         )
 
 		return res.send(JSON.stringify(jsonObjects)) //this sends all childComment objects
-
 	})
-	
 })
 
 //parent from post end
