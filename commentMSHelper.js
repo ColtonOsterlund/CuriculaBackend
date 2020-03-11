@@ -29,7 +29,7 @@ function insertCommentToDatabase(parentID, commentID, userID, theText, counter){
 	//Finally apply query 1 and 2 to database after user creates and after passign all necessary values
 }
 	
-	
+//maybe combine child and parent
 	
 //child from parent end
 router.post('/comment/parent', jsonParser, (req, res) => {
