@@ -2,6 +2,9 @@ const express = require('express')
 const mysqlHelper = require('./MySQLHelper.js')
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> added missing files for microservice
 function createCommentEvent(newEvent) {
     newEvent.timeStamp = Date.now()
     newEvent.eventID = 123  //TODO generate unique eventID (or let SQL)
@@ -23,6 +26,10 @@ function createVoteEvent(newEvent) {
 }
 
 module.exports.createCommentEvent = createCommentEvent;
+<<<<<<< HEAD
 module.exports.createVoteEvent = createVoteEvent;
 =======
 >>>>>>> Added POST endpoints for comments and upvotes. Added microservice stubs to handle the endpoint
+=======
+module.exports.createVoteEvent = createVoteEvent;
+>>>>>>> added missing files for microservice
