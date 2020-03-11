@@ -10,4 +10,4 @@ function comment(commentID, comment, userID, videoId, parentCommentID, timeStamp
 }
 
 
-module.exports = comment;
+module.exports.comment = comment;
