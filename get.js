@@ -404,7 +404,7 @@ router.get("/videos", jsonParser, (req, res) => {
     }
 
     if(courseID == undefined && schoolID != undefined && programID == undefined){
-        mysqlHelper.sqlQuery("SELECT * FROM content WHERE content.relatedCourseID = course.courseID AND course.courseID = schoolRelCourse.courseID AND schoolRelCourse.schoolID = ?", [schoolID], (err, rows) => {
+        mysqlHelper.sqlQuery("SELECT * FROM content AS C, course as CO, schoolRelCourse AS SRC WHERE C.relatedCourseID = CO.courseID AND CO.courseID = SRC.courseID AND SRC.schoolID = ?", [schoolID], (err, rows) => {
             if(err != null){
                 return res.send("Error: " + err)
             }
@@ -432,7 +432,7 @@ router.get("/videos", jsonParser, (req, res) => {
     }
 
     if(courseID == undefined && schoolID == undefined && programID != undefined){
-        mysqlHelper.sqlQuery("SELECT * FROM content WHERE content.relatedCourseID = course.courseID AND course.courseID = programRelCourse.courseID AND programRelCourse.programID = ?", [programID], (err, rows) => {
+        mysqlHelper.sqlQuery("SELECT * FROM content AS C, course AS CO, programRelCourse AS PRC WHERE C.relatedCourseID = CO.courseID AND CO.courseID = PRC.courseID AND PRC.programID = ?", [programID], (err, rows) => {
             if(err != null){
                 return res.send("Error: " + err)
             }
@@ -460,7 +460,7 @@ router.get("/videos", jsonParser, (req, res) => {
     }
 
     if(courseID == undefined && schoolID != undefined && programID != undefined){
-        mysqlHelper.sqlQuery("SELECT * FROM content WHERE content.relatedCourseID = course.courseID AND course.courseID = programRelCourse.courseID AND programRelCourse.programID = ? AND programRelCourse.programID = ? AND programRelCourse.schoolID = ?", [programID, programID, schoolID], (err, rows) => {
+        mysqlHelper.sqlQuery("SELECT * FROM content AS C, course AS CO, programRelCourse AS PRC, schoolRelProgram AS SRP WHERE C.relatedCourseID = CO.courseID AND CO.courseID = PRC.courseID AND PRC.programID = ? AND SRP.programID = ? AND SRP.schoolID = ?", [programID, programID, schoolID], (err, rows) => {
             if(err != null){
                 return res.send("Error: " + err)
             }
