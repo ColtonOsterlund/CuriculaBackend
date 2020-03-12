@@ -344,10 +344,11 @@ router.get("/programs", jsonParser, (req, res) => {
 
 router.get("/videos", jsonParser, (req, res) => {
 
-    var userID = req.query.userID;
     var courseID = req.query.courseID;
+    var schoolID = req.query.schoolID;
+    var programID = req.query.programID;
 
-    if(userID == undefined && courseID == undefined){
+    if(courseID == undefined && schoolID == undefined && programID == undefined){
         mysqlHelper.sqlQuery("SELECT * FROM content", null, (err, rows) => {
             if(err != null){
                 return res.send("Error: " + err)
@@ -374,7 +375,7 @@ router.get("/videos", jsonParser, (req, res) => {
         });
     }
 
-    if(userID == undefined && courseID != undefined){
+    if(courseID != undefined && schoolID == undefined && programID == undefined){
         mysqlHelper.sqlQuery("SELECT * FROM content WHERE relatedCourseID = ?", [courseID], (err, rows) => {
             if(err != null){
                 return res.send("Error: " + err)
@@ -402,8 +403,8 @@ router.get("/videos", jsonParser, (req, res) => {
 
     }
 
-    if(userID != undefined && courseID == undefined){
-        mysqlHelper.sqlQuery("SELECT * FROM content WHERE posterID = ?", [userID], (err, rows) => {
+    if(courseID == undefined && schoolID != undefined && programID == undefined){
+        mysqlHelper.sqlQuery("SELECT * FROM content WHERE content.relatedCourseID = course.courseID AND course.courseID = schoolRelCourse.courseID AND schoolRelCourse.schoolID = ?", [schoolID], (err, rows) => {
             if(err != null){
                 return res.send("Error: " + err)
             }
@@ -430,8 +431,8 @@ router.get("/videos", jsonParser, (req, res) => {
 
     }
 
-    if(userID != undefined && courseID != undefined){
-        mysqlHelper.sqlQuery("SELECT * FROM content WHERE posterID = ? AND relatedCourseID = ?", [userID, courseID], (err, rows) => {
+    if(courseID == undefined && schoolID == undefined && programID != undefined){
+        mysqlHelper.sqlQuery("SELECT * FROM content WHERE content.relatedCourseID = course.courseID AND course.courseID = programRelCourse.courseID AND programRelCourse.programID = ?", [programID], (err, rows) => {
             if(err != null){
                 return res.send("Error: " + err)
             }
@@ -455,7 +456,38 @@ router.get("/videos", jsonParser, (req, res) => {
                 return res.send(JSON.stringify(jsonObjects))
             }
         });
+
     }
+
+    if(courseID == undefined && schoolID != undefined && programID != undefined){
+        mysqlHelper.sqlQuery("SELECT * FROM content WHERE content.relatedCourseID = course.courseID AND course.courseID = programRelCourse.courseID AND programRelCourse.programID = ? AND programRelCourse.programID = ? AND programRelCourse.schoolID = ?", [programID, programID, schoolID], (err, rows) => {
+            if(err != null){
+                return res.send("Error: " + err)
+            }
+            else{
+                var jsonObjects = []
+                
+                rows.forEach(function(video){
+                    var videoObject = {
+                        videoID: video.videoID,
+                        videoLink: video.videoLink,
+                        description: video.description,
+                        datePosted: video.datePosted,
+                        relatedCourseID: video.relatedCourseID,
+                        verifiedFlag: video.verifiedFlag,
+                        posterID: video.posterID
+                    }
+
+                    jsonObjects.push(videoObject);
+                })
+
+                return res.send(JSON.stringify(jsonObjects))
+            }
+        });
+
+    }
+
+
    
 })
 
