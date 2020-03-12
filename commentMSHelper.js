@@ -12,7 +12,7 @@ function insertCommentToDatabase(parentID, commentID, userID, theText, counter){
 	var today = new Date();
 	var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
 		
-	var query2 = "INSERT INTO comment (commentID, authorUser, datePosted, text, counter) VALUES (" + commentID+ "," + userID + "," + date + "," + theText + "," + counter + ");"; 
+	var query2 = "INSERT INTO comments (commentID, authorUser, datePosted, text, counter) VALUES (" + commentID+ "," + userID + "," + date + "," + theText + "," + counter + ");"; 
 		
 		
 	//Finally apply query 1 and 2 to database after user creates and after passign all necessary values

@@ -14,7 +14,7 @@ router.get('/comment', jsonParser, (req, res) => {
 	var parentID = req.body.parentID
 	
 	if(commentID == undefined ){ //NO QUERY PARAMETERS
-        mysqlHelper.sqlQuery("SELECT * FROM comment", null, (err, rows) => {
+        mysqlHelper.sqlQuery("SELECT * FROM comments", null, (err, rows) => {
             if(err != null){
                 return res.send("Error: " + err)
             }
@@ -38,7 +38,7 @@ router.get('/comment', jsonParser, (req, res) => {
     }
 
     else {
-		mysqlHelper.sqlQuery("SELECT * FROM comment WHERE commentID = ?", [parentID], (err, objects) => { //callback function so that query loads before data is checked/sent back to user
+		mysqlHelper.sqlQuery("SELECT * FROM comments WHERE commentID = ?", [parentID], (err, objects) => { //callback function so that query loads before data is checked/sent back to user
 
 			if(err != null){
 				return console.log("ERROR : " + err)
