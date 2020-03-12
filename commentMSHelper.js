@@ -30,11 +30,10 @@ function insertCommentToDatabase(parentID, commentID, userID, theText, counter){
 }
 	
 //maybe combine child and parent
-	
 //child from parent end
-router.post('/comment/parent', jsonParser, (req, res) => {
+router.get('/comment', jsonParser, (req, res) => {
 	
-	var parentID = req.body.parentID
+	var commentID = req.body.commentID
 	
 	var object = mysqlHelper.sqlQuery("SELECT * FROM childComment WHERE parentID = ?", [parentID], (err, objects) => { //callback function so that query loads before data is checked/sent back to user
 
