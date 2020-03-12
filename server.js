@@ -4,6 +4,7 @@ const dotenv = require('dotenv') //used to configure the environment variables
 const bodyParser = require('body-parser'); //used to parse json body requests
 const jwt = require('jsonwebtoken') //used for web token authentication
 const getRouter = require('./get.js')
+const commentGetRouter = require('./commentGet.js')
 const postRouter = require('./post.js')
 const authenticationRouter = require('./authorization.js')
 const mysqlHelper = require('./MySQLHelper.js')
@@ -16,6 +17,7 @@ server.use(morgan('combined')) //used for more detailed logging
 dotenv.config() //CONFIGURE ENVIRONMENT VARIABLES
 server.use(bodyParser.json());
 server.use(getRouter)
+server.use(commentGetRouter)
 server.use(postRouter)
 server.use(authenticationRouter.router)
 server.use(cors()) //THIS IS SUPPOSED TO SOLVE CORS ISSUE BUT IS NOT WORKING - LOOK MORE INTO THIS
