@@ -219,4 +219,4 @@ router.post('/user/logout', jsonParser, authorizeUser, (req, res) => {
 
 
 module.exports.router = router;
-module.exports.authorizeUser = authorizeUserTesting;
+module.exports.authorizeUser = authorizeUser;
