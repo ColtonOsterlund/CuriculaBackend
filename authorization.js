@@ -15,38 +15,43 @@ const router = express.Router()
 var jsonParser = bodyParser.json()
 
 
-function authorizeUser(req, res, next){
+function authorizeUser(req, res, next) {
 
-	 const token = req.header('auth-token')
-	 if(!token){
+	const token = req.header('auth-token')
+	if (!token) {
 		return res.status(401).send("Access Denied");
-	 }
-	 
-	 try{
-		 const verified = jwt.verify(token, process.env.TOKEN_SECRET)
-		 
-		 mysqlHelper.sqlQuery("SELECT * FROM blacklistedjwts WHERE jwt = ?", token, (err, rows) => {
+	}
+
+	try {
+		const verified = jwt.verify(token, process.env.TOKEN_SECRET)
+
+		mysqlHelper.sqlQuery("SELECT * FROM blacklistedjwts WHERE jwt = ?", token, (err, rows) => {
 
 			console.log(rows[0])
 
-			if(err != null){ 
+			if (err != null) {
 				console.log("error case")
 				return res.status(401).send("Access Denied")
-			}	
-			else if(rows[0] != undefined){
+			}
+			else if (rows[0] != undefined) {	//TODO this should be "=="?
 				console.log("rows undefined case")
 				return res.status(400).send("Invalid Token")
 			}
-			else{
+			else {
 				req.user = verified //this sets req.user to the payload id from the JWT - this is to identify which user is making the request
 				next() //proceed to the next middleware in the route
-			}		
+			}
 		})
 
-	 }catch(err){
-		 return res.status(400).send("Invalid Token")
-	 }
- }
+	} catch (err) {
+		return res.status(400).send("Invalid Token")
+	}
+}
+
+function authorizeUserTesting(req, res, next) {
+	req.user = req.body.user
+	next()
+}
 
 
 router.get("/user/authenticate", jsonParser, authorizeUser, (req, res) => {
@@ -60,38 +65,38 @@ router.post('/user/register', jsonParser, (req, res) => {
 	console.log(req.body)
 
 	var username = req.body.username
-    var email = req.body.email
-    var firstName = req.body.firstName
-    var lastName = req.body.lastName
-    var majorProgramID = req.body.majorProgramID
-    var minorProgramID = req.body.minorProgramID
-    var schoolID = req.body.schoolID
-	var hashedPassword = bcrypt.hashSync(req.body.password, 10, function(err, hash){
-		if(err){
+	var email = req.body.email
+	var firstName = req.body.firstName
+	var lastName = req.body.lastName
+	var majorProgramID = req.body.majorProgramID
+	var minorProgramID = req.body.minorProgramID
+	var schoolID = req.body.schoolID
+	var hashedPassword = bcrypt.hashSync(req.body.password, 10, function (err, hash) {
+		if (err) {
 			console.log("error while hashing password: " + err)
-			return res.send(err)	
+			return res.send(err)
 		}
 	})
 	//use hashSync so that it is synchronous and finished the hash before the next code executes - implements a callback function itself
-    
-    
-    var userID = uuid.v4();
+
+
+	var userID = uuid.v4();
 
 	mysqlHelper.sqlQuery("SELECT * FROM user WHERE username = ? OR email = ?", [username, email], (err, objects) => {
 
-		if(err){
+		if (err) {
 			res.send("Server Error")
 			return
 		}
 
-		if(objects[0] != undefined){
+		if (objects[0] != undefined) {
 			res.send("Username or Email has Already Been Used")
 			return
 		}
-		else{
+		else {
 			//save user to database
-			mysqlHelper.sqlQuery("INSERT INTO user (username, email, password, userID, firstName, lastName) VALUES (?, ?, ?, ?, ?, ?)", [username, email, hashedPassword, userID, firstName, lastName], (err, objects) =>{ //TODO: CHANGE THIS TO MATCH OUR DATABASE SCHEMA
-				if(err){
+			mysqlHelper.sqlQuery("INSERT INTO user (username, email, password, userID, firstName, lastName) VALUES (?, ?, ?, ?, ?, ?)", [username, email, hashedPassword, userID, firstName, lastName], (err, objects) => { //TODO: CHANGE THIS TO MATCH OUR DATABASE SCHEMA
+				if (err) {
 					res.status(501).send("Server Database Query Error")
 					return
                 }
@@ -135,12 +140,12 @@ router.post('/user/register', jsonParser, (req, res) => {
 			})
 		}
 	})
-	
- })
+
+})
 
 
 router.post('/user/login', jsonParser, (req, res) => {
-	
+
 	var email = req.body.email
 	var password = req.body.password
 	var token = null
@@ -150,68 +155,68 @@ router.post('/user/login', jsonParser, (req, res) => {
 
 		//console.log(objects[0])
 
-		if(err != null){
+		if (err != null) {
 			//console.log("got here 1")
 			//res.send("Server Error")
 			return console.log("ERROR : " + err)
 		}
 
-		if(objects[0] == undefined){ //email did not match - user not in database
+		if (objects[0] == undefined) { //email did not match - user not in database
 			//console.log("got here 2")
 			return res.send("Username or Password is Incorrect")
 		}
-		
-		bcrypt.compareSync(password, objects[0].password, function(err, res){ //compares password sent with hashed password in database
-			if(err){
+
+		bcrypt.compareSync(password, objects[0].password, function (err, res) { //compares password sent with hashed password in database
+			if (err) {
 				return res.send("error comparing password with stored hashed password: " + err)
 			}
-			else if(res != null){
+			else if (res != null) {
 				//passwords match
 			}
-			else{
+			else {
 				//passwords dont match
 				return res.send("Username or Passoword is Incorrect")
 			}
 		})
-	
+
 		//at this point it will have been returned if the login was not succesful
 		//res.send("logged in")
-	
+
 		//console.log("got here 4")
 
 		//create and assign JWT
-        token = jwt.sign({_id: objects[0].userID}, process.env.TOKEN_SECRET, {expiresIn: '1h'}) //change the id from username to the userID
-        
-        var jsonObjects = []
+		token = jwt.sign({ _id: objects[0].userID }, process.env.TOKEN_SECRET, { expiresIn: '1h' }) //change the id from username to the userID
 
-        var loginObject = {
-            userUUID: objects[0].userID,
-            jwt: token
-        }
+		var jsonObjects = []
 
-        jsonObjects.push(loginObject);
+		var loginObject = {
+			userUUID: objects[0].userID,
+			jwt: token
+		}
 
-        return res.send(JSON.stringify(jsonObjects)) //this sends back the UUID
+		jsonObjects.push(loginObject);
+
+		return res.send(JSON.stringify(jsonObjects)) //this sends back the UUID
 
 	})
 
- })
+})
 
 router.post('/user/logout', jsonParser, authorizeUser, (req, res) => {
-	
+
 	const token = req.header("auth-token")
 
 	mysqlHelper.sqlQuery("INSERT INTO blacklistedjwts (jwt, deleteNext) VALUES (?, ?)", [token, "0"], (err, rows) => {
-		if(err != null){
+		if (err != null) {
 			return res.send(err)
 		}
-		else{
+		else {
 			return res.send("Success")
 		}
 	})
 
- })
+})
 
 
- module.exports.router = router;
- module.exports.authorizeUser = authorizeUser;
+module.exports.router = router;
+module.exports.authorizeUser = authorizeUserTesting;
