@@ -18,7 +18,7 @@ server.use(morgan('combined')) //used for more detailed logging
 dotenv.config() //CONFIGURE ENVIRONMENT VARIABLES
 server.use(bodyParser.json());
 server.use(getRouter)
-server.use(postRouter.router)
+server.use(postRouter)
 server.use(commentGetRouter)
 server.use(postRouter)
 server.use(authenticationRouter.router)
