@@ -1,27 +1,72 @@
 //commentMShelper.js
+const mysqlHelper = require('./MySQLHelper.js')
 
-function insertCommentToDatabase(parentID, commentID, userID, theText, counter){
+function insertCommentToDatabase(parentID, commentID, userID, theText){
+	var query
 	
 	if (parentID == null){//parent comment
-		var query = "INSERT INTO parentComment(parentID) VALUES (" + commentID + ");";
+		query = "INSERT INTO parentComment(parentID) VALUES (" + commentID + ");";
 	} else{//child comment
-		var query = "INSERT INTO childComment(childID, parentID) VALUES ("+commentID+","+parentID+");";
+		query = "INSERT INTO childComment(childID, parentID) VALUES ("+commentID+","+parentID+");";
 	}
+	
+	mysqlHelper.sqlQuery(query, null, (err, rows) => {
+        if(err != null){
+            console.log("Error inserting child/parent comment in DB: " + err)
+        }
+        else{
+            console.log("Successfully created and inserted child/parent comment in DB")
+        }
+	})
 		
 	//today code obtained from https://tecadmin.net/get-current-date-time-javascript/
 	var today = new Date();
 	var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
 		
-	var query2 = "INSERT INTO comment (commentID, authorUser, datePosted, text, counter) VALUES (" + commentID+ "," + userID + "," + date + "," + theText + "," + counter + ");"; 
+	var query2 = "INSERT INTO comment (commentID, authorUser, datePosted, text, counter) VALUES (" + commentID+ "," + userID + "," + date + "," + theText + ",0);"; 
 		
-		
-	//Finally apply query 1 and 2 to database after user creates and after passign all necessary values
+	mysqlHelper.sqlQuery(query2, null, (err, rows) => {
+        if(err != null){
+            console.log("Error inserting comment in DB: " + err)
+        }
+        else{
+            console.log("Successfully created and inserted comment in DB")
+        }
+	})
 }
 
 
-//create delete comment function deleting the comment from all places in db
-
-
+function deleteCommentFromDatabase(commentID){
+	var query1 = "DELETE FROM parentComment WHERE parentID = " + commentID;
+	mysqlHelper.sqlQuery(query2, null, (err, rows) => {
+        if(err != null){
+            console.log("Error deleting parentComment object in DB: " + err)
+        }
+        else{
+            console.log("Successfully deleted object from parentComment table in DB")
+        }
+	})
 	
+	var query2 = "DELETE FROM childComment WHERE childID = " + commentID;
+	mysqlHelper.sqlQuery(query2, null, (err, rows) => {
+        if(err != null){
+            console.log("Error deleting childComment object in DB: " + err)
+        }
+        else{
+            console.log("Successfully deleted object from childComment table in DB")
+        }
+	})
+	
+	var query3 = "DELETE FROM comment WHERE commentID = " + commentID; 
+	mysqlHelper.sqlQuery(query2, null, (err, rows) => {
+        if(err != null){
+            console.log("Error deleting comment object in DB: " + err)
+        }
+        else{
+            console.log("Successfully deleted object from comment table in DB")
+        }
+	})	
+}	
 	
 module.exports.insertCommentToDatabase = insertCommentToDatabase
+module.exports.deleteCommentFromDatabase = deleteCommentFromDatabase
