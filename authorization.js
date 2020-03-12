@@ -197,7 +197,7 @@ router.post('/user/login', jsonParser, (req, res) => {
 		jsonObjects.push(loginObject);
 
 		res.header('user-uuid', objects[0].userID)
-		res.header('auth-token', jwt)
+		res.header('auth-token', token)
 		return res.send(JSON.stringify(jsonObjects)) //this sends back the UUID
 
 	})
