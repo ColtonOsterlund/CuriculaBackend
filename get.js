@@ -347,8 +347,9 @@ router.get("/videos", jsonParser, (req, res) => {
     var courseID = req.query.courseID;
     var schoolID = req.query.schoolID;
     var programID = req.query.programID;
+    var videoID = req.query.videoID;
 
-    if(courseID == undefined && schoolID == undefined && programID == undefined){
+    if(courseID == undefined && schoolID == undefined && programID == undefined && videoID == undefined){
         mysqlHelper.sqlQuery("SELECT * FROM content", null, (err, rows) => {
             if(err != null){
                 return res.send("Error: " + err)
@@ -375,7 +376,7 @@ router.get("/videos", jsonParser, (req, res) => {
         });
     }
 
-    if(courseID != undefined && schoolID == undefined && programID == undefined){
+    if(courseID != undefined && schoolID == undefined && programID == undefined && videoID == undefined){
         mysqlHelper.sqlQuery("SELECT * FROM content WHERE relatedCourseID = ?", [courseID], (err, rows) => {
             if(err != null){
                 return res.send("Error: " + err)
@@ -403,7 +404,7 @@ router.get("/videos", jsonParser, (req, res) => {
 
     }
 
-    if(courseID == undefined && schoolID != undefined && programID == undefined){
+    if(courseID == undefined && schoolID != undefined && programID == undefined && videoID == undefined){
         mysqlHelper.sqlQuery("SELECT * FROM content AS C, course as CO, schoolRelCourse AS SRC WHERE C.relatedCourseID = CO.courseID AND CO.courseID = SRC.courseID AND SRC.schoolID = ?", [schoolID], (err, rows) => {
             if(err != null){
                 return res.send("Error: " + err)
@@ -431,7 +432,7 @@ router.get("/videos", jsonParser, (req, res) => {
 
     }
 
-    if(courseID == undefined && schoolID == undefined && programID != undefined){
+    if(courseID == undefined && schoolID == undefined && programID != undefined && videoID == undefined){
         mysqlHelper.sqlQuery("SELECT * FROM content AS C, course AS CO, programRelCourse AS PRC WHERE C.relatedCourseID = CO.courseID AND CO.courseID = PRC.courseID AND PRC.programID = ?", [programID], (err, rows) => {
             if(err != null){
                 return res.send("Error: " + err)
@@ -459,8 +460,36 @@ router.get("/videos", jsonParser, (req, res) => {
 
     }
 
-    if(courseID == undefined && schoolID != undefined && programID != undefined){
+    if(courseID == undefined && schoolID != undefined && programID != undefined && videoID == undefined){
         mysqlHelper.sqlQuery("SELECT * FROM content AS C, course AS CO, programRelCourse AS PRC, schoolRelProgram AS SRP WHERE C.relatedCourseID = CO.courseID AND CO.courseID = PRC.courseID AND PRC.programID = ? AND SRP.programID = ? AND SRP.schoolID = ?", [programID, programID, schoolID], (err, rows) => {
+            if(err != null){
+                return res.send("Error: " + err)
+            }
+            else{
+                var jsonObjects = []
+                
+                rows.forEach(function(video){
+                    var videoObject = {
+                        videoID: video.videoID,
+                        videoLink: video.videoLink,
+                        description: video.description,
+                        datePosted: video.datePosted,
+                        relatedCourseID: video.relatedCourseID,
+                        verifiedFlag: video.verifiedFlag,
+                        posterID: video.posterID
+                    }
+
+                    jsonObjects.push(videoObject);
+                })
+
+                return res.send(JSON.stringify(jsonObjects))
+            }
+        });
+
+    }
+
+    if(courseID == undefined && schoolID == undefined && programID == undefined && videoID != undefined){
+        mysqlHelper.sqlQuery("SELECT * FROM content WHERE videoID = ?", [videoID], (err, rows) => {
             if(err != null){
                 return res.send("Error: " + err)
             }
