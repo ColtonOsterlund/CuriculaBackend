@@ -136,7 +136,7 @@ router.post('/user/register', jsonParser, (req, res) => {
                 
                 jsonObjects.push(registrationObject);
 				
-				return res.header('user-uuid', userUUID).send(JSON.stringify(jsonObjects)) //this sends back the UUID
+				return res.header('user-uuid', userID).send(JSON.stringify(jsonObjects)) //this sends back the UUID
 			})
 		}
 	})
