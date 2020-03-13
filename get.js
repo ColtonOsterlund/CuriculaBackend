@@ -800,7 +800,7 @@ router.get('/comment', jsonParser, (req, res) => {
     }else if(postID == undefined && parentID != undefined){ //NO QUERY PARAMETERS
         mysqlHelper.sqlQuery("SELECT * FROM comments WHERE comments.commentID = (SELECT childID FROM childcomment WHERE parentID = ?)", [parentID], (err, rows) => {
             if(err != null){
-                return res.send("Error: " + err)
+                return res.send("Error: postID undef parentID def" + err)
             }
             else{
                 var jsonObjects = []
