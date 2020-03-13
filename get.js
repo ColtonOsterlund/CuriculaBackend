@@ -798,7 +798,7 @@ router.get('/comment', jsonParser, (req, res) => {
             }
         });
     }else if(postID == undefined && parentID != undefined){
-        mysqlHelper.sqlQuery("SELECT * FROM comments WHERE comments.commentID = (SELECT childID FROM childcomment WHERE parentID = ?)", [parentID], (err, rows) => {
+        mysqlHelper.sqlQuery("SELECT * FROM comments WHERE commentID IN (SELECT childID FROM childcomment WHERE parentID = ?)", [parentID], (err, rows) => {
             if(err != null){
                 return res.send("Error: " + err)//ERROR!!!!!!!!!!!!!!!!!!!
             }
