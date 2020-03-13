@@ -753,7 +753,7 @@ router.get('/comment', jsonParser, (req, res) => {
 	var parentID = req.query.parentID
 	
 	if(postID != undefined && parentID != undefined){ //NO QUERY PARAMETERS
-        mysqlHelper.sqlQuery("SELECT * FROM comments WHERE comments.commentID = (SELECT parentID FROM parentcomment WHERE postID = ?) OR (SELECT childID FROM childcomment WHERE parentID = ?)", [postID, parentID], (err, rows) => {
+        mysqlHelper.sqlQuery("SELECT * FROM comments WHERE comments.commentID = (SELECT parentID FROM parentcomment WHERE postID = ?) OR (SELECT childID FROM childcomment WHERE parentID = ?)", [postID, parentID], (err, objects) => {
             if(err != null){
                 return res.send("Error: " + err)
             }
@@ -776,7 +776,7 @@ router.get('/comment', jsonParser, (req, res) => {
         });
     } else if(postID != undefined && parentID == undefined){ //NO QUERY PARAMETERS
         console.log("querying using postID " + postID)
-        mysqlHelper.sqlQuery("SELECT * FROM comments WHERE comments.commentID = (SELECT parentID FROM parentcomment WHERE postID = ?)", [postID], (err, rows) => {
+        mysqlHelper.sqlQuery("SELECT * FROM comments WHERE comments.commentID = (SELECT parentID FROM parentcomment WHERE postID = ?)", [postID], (err, objects) => {
             if(err != null){
                 return res.send("Error: " + err)
             }
@@ -798,9 +798,9 @@ router.get('/comment', jsonParser, (req, res) => {
             }
         });
     }else if(postID == undefined && parentID != undefined){ //NO QUERY PARAMETERS
-        mysqlHelper.sqlQuery("SELECT * FROM comments WHERE comments.commentID = (SELECT childID FROM childcomment WHERE parentID = ?)", [parentID], (err, rows) => {
+        mysqlHelper.sqlQuery("SELECT * FROM comments WHERE comments.commentID = (SELECT childID FROM childcomment WHERE parentID = ?)", [parentID], (err, objects) => {
             if(err != null){
-                return res.send("Error: postID undef parentID def" + err)
+                return res.send("Error: postID undef parentID def" + err)//Error here
             }
             else{
                 var jsonObjects = []
@@ -820,7 +820,7 @@ router.get('/comment', jsonParser, (req, res) => {
             }
         });
     } else if(postID == undefined  && parentID == undefined){ //NO QUERY PARAMETERS
-        mysqlHelper.sqlQuery("SELECT * FROM comments", null, (err, rows) => {
+        mysqlHelper.sqlQuery("SELECT * FROM comments", null, (err, objects) => {
             if(err != null){
                 return res.send("Error: " + err)
             }
