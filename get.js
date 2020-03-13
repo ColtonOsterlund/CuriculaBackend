@@ -749,8 +749,8 @@ router.get("/videos", jsonParser, (req, res) => {
 
 router.get('/comment', jsonParser, (req, res) => {
 	
-	var postID = req.body.postID
-	var parentID = req.body.parentID
+	var postID = req.query.postID
+	var parentID = req.query.parentID
 	
 	if(postID != undefined && parentID != undefined){ //NO QUERY PARAMETERS
         mysqlHelper.sqlQuery("SELECT * FROM comments WHERE comments.commentID = (SELECT parentID FROM parentcomment WHERE postID = ?) OR (SELECT childID FROM childcomment WHERE parentID = ?)", [postID, parentID], (err, rows) => {
@@ -775,6 +775,7 @@ router.get('/comment', jsonParser, (req, res) => {
             }
         });
     } else if(postID != undefined && parentID == undefined){ //NO QUERY PARAMETERS
+        console.log("querying using postID " + postID)
         mysqlHelper.sqlQuery("SELECT * FROM comments WHERE comments.commentID = (SELECT parentID FROM parentcomment WHERE postID = ?)", [postID], (err, rows) => {
             if(err != null){
                 return res.send("Error: " + err)
