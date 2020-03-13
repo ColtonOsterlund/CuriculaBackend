@@ -1,6 +1,5 @@
-const express = require('express')
 const uuid = require('uuid')
-const mysqlHelper = require('./MySQLHelper.js')
+const mysqlHelper = require('../MySQLHelper.js')
 
 class Event {
     constructor() {

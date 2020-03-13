@@ -4,7 +4,7 @@ const express = require('express')
 const mysqlHelper = require('./MySQLHelper.js')
 var bodyParser = require('body-parser')
 var authorization = require('./authorization.js')
-var commentMicroService = require('./comment-microservice.js')
+var commentMicroService = require('./commentMS/comment-microservice.js')
 
 
 const router = express.Router()
