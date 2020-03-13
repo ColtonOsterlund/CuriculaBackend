@@ -538,7 +538,7 @@ router.get("/videos", jsonParser, (req, res) => {
                             text: comment.text, 
                             counter: comment.counter}
     
-                    jsonObjects.push(comment);
+						jsonObjects.push(comment);
                    })
     
                     return res.send(JSON.stringify(jsonObjects))
@@ -753,7 +753,7 @@ router.get('/comment', jsonParser, (req, res) => {
 	var parentID = req.query.parentID
 	
 	if(postID != undefined && parentID != undefined){ //NO QUERY PARAMETERS
-        mysqlHelper.sqlQuery("SELECT * FROM comments WHERE comments.commentID = (SELECT parentID FROM parentcomment WHERE postID = ?) OR (SELECT childID FROM childcomment WHERE parentID = ?)", [postID, parentID], (err, objects) => {
+        mysqlHelper.sqlQuery("SELECT * FROM comments WHERE comments.commentID = (SELECT parentID FROM parentcomment WHERE postID = ?) OR (SELECT childID FROM childcomment WHERE parentID = ?)", [postID, parentID], (err, rows) => {
             if(err != null){
                 return res.send("Error: " + err)
             }
@@ -768,7 +768,7 @@ router.get('/comment', jsonParser, (req, res) => {
 						text: comment.text, 
 						counter: comment.counter}
 
-				jsonObjects.push(comment);
+				jsonObjects.push(commentObject);
 			   })
 
                 return res.send(JSON.stringify(jsonObjects))
@@ -776,7 +776,7 @@ router.get('/comment', jsonParser, (req, res) => {
         });
     } else if(postID != undefined && parentID == undefined){ //NO QUERY PARAMETERS
         console.log("querying using postID " + postID)
-        mysqlHelper.sqlQuery("SELECT * FROM comments WHERE comments.commentID = (SELECT parentID FROM parentcomment WHERE postID = ?)", [postID], (err, objects) => {
+        mysqlHelper.sqlQuery("SELECT * FROM comments WHERE comments.commentID = (SELECT parentID FROM parentcomment WHERE postID = ?)", [postID], (err, rows) => {
             if(err != null){
                 return res.send("Error: " + err)
             }
@@ -791,16 +791,16 @@ router.get('/comment', jsonParser, (req, res) => {
 						text: comment.text, 
 						counter: comment.counter}
 
-				jsonObjects.push(comment);
+				jsonObjects.push(commentObject);
 			   })
 
                 return res.send(JSON.stringify(jsonObjects))
             }
         });
-    }else if(postID == undefined && parentID != undefined){ //NO QUERY PARAMETERS
-        mysqlHelper.sqlQuery("SELECT * FROM comments WHERE comments.commentID = (SELECT childID FROM childcomment WHERE parentID = ?)", [parentID], (err, objects) => {
+    }else if(postID == undefined && parentID != undefined){
+        mysqlHelper.sqlQuery("SELECT * FROM comments WHERE comments.commentID = (SELECT childID FROM childcomment WHERE parentID = ?)", [parentID], (err, rows) => {
             if(err != null){
-                return res.send("Error: postID undef parentID def" + err)//Error here
+                return res.send("Error: " + err)//ERROR!!!!!!!!!!!!!!!!!!!
             }
             else{
                 var jsonObjects = []
@@ -813,14 +813,14 @@ router.get('/comment', jsonParser, (req, res) => {
 						text: comment.text, 
 						counter: comment.counter}
 
-				jsonObjects.push(comment);
+				jsonObjects.push(commentObject);
 			   })
 
                 return res.send(JSON.stringify(jsonObjects))
             }
         });
     } else if(postID == undefined  && parentID == undefined){ //NO QUERY PARAMETERS
-        mysqlHelper.sqlQuery("SELECT * FROM comments", null, (err, objects) => {
+        mysqlHelper.sqlQuery("SELECT * FROM comments", null, (err, rows) => {
             if(err != null){
                 return res.send("Error: " + err)
             }
@@ -835,7 +835,7 @@ router.get('/comment', jsonParser, (req, res) => {
 						text: comment.text, 
 						counter: comment.counter}
 
-				jsonObjects.push(comment);
+				jsonObjects.push(commentObject);
 			   })
 
                 return res.send(JSON.stringify(jsonObjects))
