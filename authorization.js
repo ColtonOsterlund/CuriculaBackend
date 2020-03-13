@@ -135,8 +135,8 @@ router.post('/user/register', jsonParser, (req, res) => {
                 }
                 
                 jsonObjects.push(registrationObject);
-                
-                return res.send(JSON.stringify(jsonObjects)) //this sends back the UUID
+				
+				return res.header('user-uuid', userID).send(JSON.stringify(jsonObjects)) //this sends back the UUID
 			})
 		}
 	})
@@ -196,6 +196,8 @@ router.post('/user/login', jsonParser, (req, res) => {
 
 		jsonObjects.push(loginObject);
 
+		res.header('user-uuid', objects[0].userID)
+		res.header('auth-token', token)
 		return res.send(JSON.stringify(jsonObjects)) //this sends back the UUID
 
 	})
@@ -219,4 +221,4 @@ router.post('/user/logout', jsonParser, authorizeUser, (req, res) => {
 
 
 module.exports.router = router;
-module.exports.authorizeUser = authorizeUserTesting;
+module.exports.authorizeUser = authorizeUser;
