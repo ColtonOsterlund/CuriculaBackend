@@ -4,7 +4,6 @@ const dotenv = require('dotenv') //used to configure the environment variables
 const bodyParser = require('body-parser'); //used to parse json body requests
 const jwt = require('jsonwebtoken') //used for web token authentication
 const getRouter = require('./get.js')
-const commentPostRouter = require('./commentPost.js')
 const postRouter = require('./post.js')
 const authenticationRouter = require('./authorization.js')
 const mysqlHelper = require('./MySQLHelper.js')
