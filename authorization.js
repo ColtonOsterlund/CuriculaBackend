@@ -106,7 +106,7 @@ router.post('/user/register', jsonParser, (req, res) => {
 			}
 
 			//save user to database
-			mysqlHelper.sqlQuery("INSERT INTO user (username, email, password, userID, firstName, lastName) VALUES (?, ?, ?, ?, ?, ?); INSERT INTO schoolRelUser(userID, schoolID) VALUES (?, ?); INSERT INTO userRelMajor(userID, majProgramID) VALUES (?, ?); INSERT INTO userRelMinor(userID, minProgramID) VALUES (?, ?);", [username, email, hashedPassword, userID, firstName, lastName, userID, schoolID, userID, majorProgramID, userID, minorProgramID], (err, objects) => { //TODO: CHANGE THIS TO MATCH OUR DATABASE SCHEMA
+			mysqlHelper.sqlQuery("INSERT INTO user (username, email, password, userID, firstName, lastName) VALUES (?, ?, ?, ?, ?, ?) INSERT INTO schoolRelUser(userID, schoolID) VALUES (?, ?) INSERT INTO userRelMajor(userID, majProgramID) VALUES (?, ?) INSERT INTO userRelMinor(userID, minProgramID) VALUES (?, ?)", [username, email, hashedPassword, userID, firstName, lastName, userID, schoolID, userID, majorProgramID, userID, minorProgramID], (err, objects) => { //TODO: CHANGE THIS TO MATCH OUR DATABASE SCHEMA
 				if (err) {
 					res.status(501).json([{message: "Server Database Query Error"}])
 					return
