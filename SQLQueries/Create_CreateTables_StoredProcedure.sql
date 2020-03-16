@@ -79,18 +79,18 @@ FOREIGN KEY(relatedCourseID) REFERENCES course(courseID)
 
 CREATE TABLE IF NOT EXISTS userRelMajor(
 userID VARCHAR(128),
-programID VARCHAR(128),
-PRIMARY KEY(userID, programID),
+majProgramID VARCHAR(128),
+PRIMARY KEY(userID, majProgramID),
 FOREIGN KEY(userID) REFERENCES user(userID),
-FOREIGN KEY(programID) REFERENCES program(programID)
+FOREIGN KEY(majProgramID) REFERENCES program(programID)
 );
 
 CREATE TABLE IF NOT EXISTS userRelMinor(
 userID VARCHAR(128),
-programID VARCHAR(128),
+minProgramID VARCHAR(128),
 PRIMARY KEY(userID, programID),
 FOREIGN KEY(userID) REFERENCES user(userID),
-FOREIGN KEY(programID) REFERENCES program(programID)
+FOREIGN KEY(minProgramID) REFERENCES program(programID)
 );
 
 CREATE TABLE IF NOT EXISTS schoolRelProgram(
