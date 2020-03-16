@@ -219,6 +219,35 @@ router.post('/user/logout', jsonParser, authorizeUser, (req, res) => {
 
 })
 
+router.get('/user/user-profile', jsonParser, authorizeUser, (req, res) => {
+
+	const userID = req.header("user-id")
+
+	mysqlHelper.sqlQuery("SELECT FROM user WHERE userID = ?", [userID], (err, rows) => {
+		if (err != null) {
+			return res.json([{message: err}])
+		}
+		else {
+			var jsonObjects = []
+
+			var userObject = {
+				userUUID: objects[0].userID,
+				userName: objects[0].userName,
+				firstName: objects[0].firstName,
+				lastName: objects[0].lastName,
+				email: objects[0].email,
+				schoolID: objects[0].schoolID
+			}
+
+			jsonObjects.push(userObject);
+
+			return res.send(JSON.stringify(jsonObjects)) //this sends back the UUID
+		}
+	})
+
+})
+
+
 
 module.exports.router = router;
 module.exports.authorizeUser = authorizeUser;
