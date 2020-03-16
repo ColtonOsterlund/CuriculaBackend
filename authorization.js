@@ -64,7 +64,7 @@ router.post('/user/register', jsonParser, (req, res) => {
 
 	console.log(req.body)
 
-	var userName = req.body.username
+	var username = req.body.userName
 	var email = req.body.email
 	var firstName = req.body.firstName
 	var lastName = req.body.lastName
