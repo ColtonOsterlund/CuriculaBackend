@@ -223,7 +223,7 @@ router.get('/user/user-profile', jsonParser, authorizeUser, (req, res) => {
 
 	var userID = req.header("user-id")
 
-	mysqlHelper.sqlQuery("SELECT * FROM user WHERE userID = ?", [userID], (err, rows) => {
+	mysqlHelper.sqlQuery("SELECT * FROM user WHERE userID = ?", [userID], (err, objects) => {
 		if (err != null) {
 			return res.json([{message: err}])
 		}
