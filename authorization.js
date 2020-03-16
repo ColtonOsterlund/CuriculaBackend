@@ -94,6 +94,17 @@ router.post('/user/register', jsonParser, (req, res) => {
 			return
 		}
 		else {
+
+			if(schoolID == undefined){
+				schoolID = null; //so that it sets null in teh db
+			}
+			if(majorProgramID == undefined){
+				majorProgramID = null; //so that it sets null in the db
+			}
+			if(minorProgramID == undefined){
+				minorProgramID = null; //so that it sets null in teh db
+			}
+
 			//save user to database
 			mysqlHelper.sqlQuery("INSERT INTO user (username, email, password, userID, firstName, lastName) VALUES (?, ?, ?, ?, ?, ?)", [username, email, hashedPassword, userID, firstName, lastName], (err, objects) => { //TODO: CHANGE THIS TO MATCH OUR DATABASE SCHEMA
 				if (err) {
@@ -101,32 +112,32 @@ router.post('/user/register', jsonParser, (req, res) => {
 					return
                 }
                 
-                if(schoolID != undefined){
+                //if(schoolID != undefined){
                     mysqlHelper.sqlQuery("INSERT INTO schoolRelUser(userID, schoolID) VALUES (?, ?)", [userID, schoolID], (err, objects) =>{
                         if(err){
                             res.json([{message: "Server Error"}])
                             return
                         }
                     })
-                }
+                //}
 
-                if(majorProgramID != undefined){
+                //if(majorProgramID != undefined){
                     mysqlHelper.sqlQuery("INSERT INTO userRelMajor(userID, programID) VALUES (?, ?)", [userID, majorProgramID], (err, objects) =>{
                         if(err){
                             res.json([{message: "Server Error"}])
                             return
                         }
                     })
-                }
+                //}
 
-                if(minorProgramID != undefined){
+               // if(minorProgramID != undefined){
                     mysqlHelper.sqlQuery("INSERT INTO userRelMinor(userID, programID) VALUES (?, ?)", [userID, minorProgramID], (err, objects) =>{
                         if(err){
                             res.json([{message: "Server Error"}])
                             return
                         }
                     })
-                }
+                //}
 
                 var jsonObjects = []
                 
