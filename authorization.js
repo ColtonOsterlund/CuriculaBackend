@@ -96,13 +96,16 @@ router.post('/user/register', jsonParser, (req, res) => {
 		else {
 
 			if(schoolID == undefined){
-				schoolID = null; //so that it sets null in teh db
+				res.json([{message: "Must specify a schoolID"}])
+				return
 			}
 			if(majorProgramID == undefined){
-				majorProgramID = null; //so that it sets null in the db
+				res.json([{message: "Must specify a majorProgramID"}])
+				return
 			}
 			if(minorProgramID == undefined){
-				minorProgramID = null; //so that it sets null in teh db
+				res.json([{message: "Must specify a majorProgramID - (IF NO MINOR, SEND 0 AS ID)"}])
+				return
 			}
 
 			//save user to database
