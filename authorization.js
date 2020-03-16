@@ -223,7 +223,7 @@ router.get('/user/user-profile', jsonParser, authorizeUser, (req, res) => {
 
 	var userID = req.header("user-id")
 
-	mysqlHelper.sqlQuery("SELECT * FROM user AS U, userRelMajor AS URELMAJ, userRelMinor AS URELMIN WHERE U.userID = ?, URELMAJ.userID = ?, URELMIN.userID = ?", [userID, userID, userID], (err, objects) => {
+	mysqlHelper.sqlQuery("SELECT * FROM user WHERE userID = ?", [userID], (err, objects) => {
 		if (err != null) {
 			return res.json([{message: err}])
 		}
@@ -235,10 +235,7 @@ router.get('/user/user-profile', jsonParser, authorizeUser, (req, res) => {
 				userName: objects[0].userName,
 				firstName: objects[0].firstName,
 				lastName: objects[0].lastName,
-				email: objects[0].email,
-				schoolID: objects[0].schoolID,
-				majorProgramID: objects[0].majProgramID,
-				minorProgramID: objects[0].minProgramID
+				email: objects[0].email
 			}
 
 			jsonObjects.push(userObject);
