@@ -115,19 +115,19 @@ router.post('/user/register', jsonParser, (req, res) => {
 									
                     mysqlHelper.sqlQuery("INSERT INTO schoolRelUser(userID, schoolID) VALUES (?, ?)", [userID, schoolID], (err, objects) =>{
                         if(err){
-                            res.json([{message: "Server Error"}])
+                            res.json([{message: "Server Error: " + err}])
                             return
 						}
 						else{
 							mysqlHelper.sqlQuery("INSERT INTO userRelMajor(userID, majProgramID) VALUES (?, ?)", [userID, majorProgramID], (err, objects) =>{
 								if(err){
-									res.json([{message: "Server Error"}])
+									res.json([{message: "Server Error: " + err}])
 									return
 								}
 								else{
 									mysqlHelper.sqlQuery("INSERT INTO userRelMinor(userID, minProgramID) VALUES (?, ?)", [userID, minorProgramID], (err, objects) =>{
 										if(err){
-											res.json([{message: "Server Error"}])
+											res.json([{message: "Server Error: " + err}])
 											return
 										}
 										else{
