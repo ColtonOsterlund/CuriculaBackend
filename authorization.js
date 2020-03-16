@@ -206,7 +206,7 @@ router.post('/user/login', jsonParser, (req, res) => {
 
 router.post('/user/logout', jsonParser, authorizeUser, (req, res) => {
 
-	const token = req.header("auth-token")
+	var token = req.header("auth-token")
 
 	mysqlHelper.sqlQuery("INSERT INTO blacklistedjwts (jwt, deleteNext) VALUES (?, ?)", [token, "0"], (err, rows) => {
 		if (err != null) {
@@ -221,7 +221,7 @@ router.post('/user/logout', jsonParser, authorizeUser, (req, res) => {
 
 router.get('/user/user-profile', jsonParser, authorizeUser, (req, res) => {
 
-	const userID = req.header("user-id")
+	var userID = req.header("user-id")
 
 	mysqlHelper.sqlQuery("SELECT * FROM user AS U, userRelMajor AS URMAJ, userRelMinor AS URMIN WHERE U.userID = ? AND URMAJ.userID = ? AND URMIN.userID = ?", [userID, userID, userID], (err, rows) => {
 		if (err != null) {
