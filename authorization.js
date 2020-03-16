@@ -116,32 +116,33 @@ router.post('/user/register', jsonParser, (req, res) => {
 					console.log(schoolID);
 					console.log(majorProgramID);
 					console.log(minorProgramID);
-                
+				
+					
                 //if(schoolID != undefined){
-                    // mysqlHelper.sqlQuery("INSERT INTO schoolRelUser(userID, schoolID) VALUES (?, ?)", [userID, schoolID], (err, objects) =>{
-                    //     if(err){
-                    //         res.json([{message: "Server Error"}])
-                    //         return
-                    //     }
-                    // })
+                    mysqlHelper.sqlQuery("INSERT INTO schoolRelUser(userID, schoolID) VALUES (?, ?)", [userID, schoolID], (err, objects) =>{
+                        if(err){
+                            res.json([{message: "Server Error"}])
+                            return
+                        }
+                    })
                 //}
 
                 //if(majorProgramID != undefined){
-                    // mysqlHelper.sqlQuery("INSERT INTO userRelMajor(userID, programID) VALUES (?, ?)", [userID, majorProgramID], (err, objects) =>{
-                    //     if(err){
-                    //         res.json([{message: "Server Error"}])
-                    //         return
-                    //     }
-                    // })
+                    mysqlHelper.sqlQuery("INSERT INTO userRelMajor(userID, majProgramID) VALUES (?, ?)", [userID, majorProgramID], (err, objects) =>{
+                        if(err){
+                            res.json([{message: "Server Error"}])
+                            return
+                        }
+                    })
                 //}
 
                // if(minorProgramID != undefined){
-                    // mysqlHelper.sqlQuery("INSERT INTO userRelMinor(userID, programID) VALUES (?, ?)", [userID, minorProgramID], (err, objects) =>{
-                    //     if(err){
-                    //         res.json([{message: "Server Error"}])
-                    //         return
-                    //     }
-                    // })
+                    mysqlHelper.sqlQuery("INSERT INTO userRelMinor(userID, minProgramID) VALUES (?, ?)", [userID, minorProgramID], (err, objects) =>{
+                        if(err){
+                            res.json([{message: "Server Error"}])
+                            return
+                        }
+                    })
                 //}
 
 					var jsonObjects = []
