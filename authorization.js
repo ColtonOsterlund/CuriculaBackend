@@ -235,7 +235,7 @@ router.get('/user/user-profile', jsonParser, authorizeUser, (req, res) => {
 				userName: objects[0].userName,
 				firstName: objects[0].firstName,
 				lastName: objects[0].lastName,
-				email: objects[0].email,
+				email: objects[0].email
 				// schoolID: objects[0].schoolID,
 				// majorProgramID: objects[0].majProgramID,
 				// minorProgramID: objects[0].minProgramID
