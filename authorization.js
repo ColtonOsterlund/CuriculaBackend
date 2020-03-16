@@ -64,7 +64,7 @@ router.post('/user/register', jsonParser, (req, res) => {
 
 	console.log(req.body)
 
-	var username = req.body.username
+	var userName = req.body.username
 	var email = req.body.email
 	var firstName = req.body.firstName
 	var lastName = req.body.lastName
@@ -237,9 +237,7 @@ router.get('/user/user-profile', jsonParser, authorizeUser, (req, res) => {
 
 	var userID = req.header("user-id")
 
-// AND URELMAJ.userID = ? AND URELMIN.userID = ? AND SCHRELU.userID = ?
-
-	mysqlHelper.sqlQuery("SELECT * FROM user AS U, userRelMajor AS URELMAJ, userRelMinor AS URELMIN, schoolRelUser AS SCHRELU WHERE U.userID = ?", [userID], (err, objects) => {
+	mysqlHelper.sqlQuery("SELECT * FROM user AS U WHERE U.userID = ?", [userID], (err, objects) => {
 		if (err != null) {
 			return res.json([{message: err}])
 		}
@@ -252,9 +250,6 @@ router.get('/user/user-profile', jsonParser, authorizeUser, (req, res) => {
 				firstName: objects[0].firstName,
 				lastName: objects[0].lastName,
 				email: objects[0].email
-				// majProgramID: objects[0].majProgramID,
-				// minProgramID: objects[0].minProgramID,
-				// schoolID: objects[0].schoolID
 			}
 
 			jsonObjects.push(userObject);
