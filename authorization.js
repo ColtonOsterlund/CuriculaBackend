@@ -106,48 +106,50 @@ router.post('/user/register', jsonParser, (req, res) => {
 			}
 
 			//save user to database
-			mysqlHelper.sqlQuery("INSERT INTO user (username, email, password, userID, firstName, lastName) VALUES (?, ?, ?, ?, ?, ?)", [username, email, hashedPassword, userID, firstName, lastName], (err, objects) => { //TODO: CHANGE THIS TO MATCH OUR DATABASE SCHEMA
+			mysqlHelper.sqlQuery("INSERT INTO user (username, email, password, userID, firstName, lastName) VALUES (?, ?, ?, ?, ?, ?); INSERT INTO schoolRelUser(userID, schoolID) VALUES (?, ?); INSERT INTO userRelMajor(userID, programID) VALUES (?, ?); INSERT INTO userRelMinor(userID, programID) VALUES (?, ?);", [username, email, hashedPassword, userID, firstName, lastName, userID, schoolID, userID, majorProgramID, userID, minorProgramID], (err, objects) => { //TODO: CHANGE THIS TO MATCH OUR DATABASE SCHEMA
 				if (err) {
 					res.status(501).json([{message: "Server Database Query Error"}])
 					return
-                }
+				}
+				else{
                 
                 //if(schoolID != undefined){
-                    mysqlHelper.sqlQuery("INSERT INTO schoolRelUser(userID, schoolID) VALUES (?, ?)", [userID, schoolID], (err, objects) =>{
-                        if(err){
-                            res.json([{message: "Server Error"}])
-                            return
-                        }
-                    })
+                    // mysqlHelper.sqlQuery("INSERT INTO schoolRelUser(userID, schoolID) VALUES (?, ?)", [userID, schoolID], (err, objects) =>{
+                    //     if(err){
+                    //         res.json([{message: "Server Error"}])
+                    //         return
+                    //     }
+                    // })
                 //}
 
                 //if(majorProgramID != undefined){
-                    mysqlHelper.sqlQuery("INSERT INTO userRelMajor(userID, programID) VALUES (?, ?)", [userID, majorProgramID], (err, objects) =>{
-                        if(err){
-                            res.json([{message: "Server Error"}])
-                            return
-                        }
-                    })
+                    // mysqlHelper.sqlQuery("INSERT INTO userRelMajor(userID, programID) VALUES (?, ?)", [userID, majorProgramID], (err, objects) =>{
+                    //     if(err){
+                    //         res.json([{message: "Server Error"}])
+                    //         return
+                    //     }
+                    // })
                 //}
 
                // if(minorProgramID != undefined){
-                    mysqlHelper.sqlQuery("INSERT INTO userRelMinor(userID, programID) VALUES (?, ?)", [userID, minorProgramID], (err, objects) =>{
-                        if(err){
-                            res.json([{message: "Server Error"}])
-                            return
-                        }
-                    })
+                    // mysqlHelper.sqlQuery("INSERT INTO userRelMinor(userID, programID) VALUES (?, ?)", [userID, minorProgramID], (err, objects) =>{
+                    //     if(err){
+                    //         res.json([{message: "Server Error"}])
+                    //         return
+                    //     }
+                    // })
                 //}
 
-                var jsonObjects = []
-                
-                var registrationObject = {
-                    userUUID: userID
-                }
-                
-                jsonObjects.push(registrationObject);
-				
-				return res.header('user-uuid', userID).send(JSON.stringify(jsonObjects)) //this sends back the UUID
+					var jsonObjects = []
+					
+					var registrationObject = {
+						userUUID: userID
+					}
+					
+					jsonObjects.push(registrationObject);
+					
+					return res.header('user-uuid', userID).send(JSON.stringify(jsonObjects)) //this sends back the UUID
+				}
 			})
 		}
 	})
@@ -234,7 +236,7 @@ router.get('/user/user-profile', jsonParser, authorizeUser, (req, res) => {
 
 	var userID = req.header("user-id")
 
-	mysqlHelper.sqlQuery("SELECT * FROM user AS U, userRelMajor AS URELMAJ, userRelMinor AS URELMIN WHERE U.userID = ?, URELMAJ.userID = ?, URELMIN.userID = ?", [userID, userID, userID], (err, objects) => {
+	mysqlHelper.sqlQuery("SELECT * FROM user AS U, userRelMajor AS URELMAJ, userRelMinor AS URELMIN, schoolRelUser AS SCHRELU WHERE U.userID = ? AND URELMAJ.userID = ? AND URELMIN.userID = ? AND SCHRELU.userID = ?", [userID, userID, userID, userID], (err, objects) => {
 		if (err != null) {
 			return res.json([{message: err}])
 		}
