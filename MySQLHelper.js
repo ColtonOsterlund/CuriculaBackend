@@ -4,7 +4,7 @@ dotenv.config() //CONFIGURE ENVIRONMENT VARIABLES
 
 function sqlQuery(query, arguments, callback){
     getConnection().query(query, arguments, (err, rows, fields) => {
-        console.log("in sql call back")
+        
         if(err != null){
             callback(err, null)
         } else {
