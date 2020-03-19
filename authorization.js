@@ -186,6 +186,24 @@ router.post('/user/login', jsonParser, (req, res) => {
 			}
 			else if (res != null) {
 				//passwords match
+
+				//create and assign JWT
+				token = jwt.sign({ _id: objects[0].userID }, process.env.TOKEN_SECRET, { expiresIn: '1h' }) //change the id from username to the userID
+
+				var jsonObjects = []
+
+				var loginObject = {
+					userUUID: objects[0].userID,
+					jwt: token
+				}
+
+				jsonObjects.push(loginObject);
+
+				res.header('user-uuid', objects[0].userID)
+				res.header('auth-token', token)
+				return res.send(JSON.stringify(jsonObjects)) //this sends back the UUID
+
+
 			}
 			else {
 				//passwords dont match
@@ -197,22 +215,6 @@ router.post('/user/login', jsonParser, (req, res) => {
 		//res.send("logged in")
 
 		//console.log("got here 4")
-
-		//create and assign JWT
-		token = jwt.sign({ _id: objects[0].userID }, process.env.TOKEN_SECRET, { expiresIn: '1h' }) //change the id from username to the userID
-
-		var jsonObjects = []
-
-		var loginObject = {
-			userUUID: objects[0].userID,
-			jwt: token
-		}
-
-		jsonObjects.push(loginObject);
-
-		res.header('user-uuid', objects[0].userID)
-		res.header('auth-token', token)
-		return res.send(JSON.stringify(jsonObjects)) //this sends back the UUID
 
 	})
 
