@@ -3,53 +3,65 @@ const mysqlHelper = require('../MySQLHelper.js')
 
 class Event {
     constructor(eventType) {
-        this.time_stamp = new Date().toISOString().replace('Z', '')
+        this.time_stamp = new Date()
         this.event_id = uuid.v4()
         this.type = eventType
     }
 }
 
-//each event will be created from command, popular, stored in event store, and finally sent to read store
-function generateEvent(command, err) {
-    console.log('in generate event()')
+//each event will be created from command, populated, stored in event store, and finally sent to read store
+function generateEvent(command, callback) {
+    console.log('command accepted: ' + JSON.stringify(command))
     createEvent(command)
         .then((event) => {
-            let populatedEvent = event.populateEvent(command)
-            console.log('populated event')
-            return storeEvent(populatedEvent)
+            event.populateEvent(command)
+            console.log('populated event: ' + JSON.stringify(event))
+            return storeEvent(event)
         })
         .then(() => {
-            console.log('next part')
+            console.log('update aggregates')
         })
-        .catch(console.log(err))
+        .then(callback())
+        .catch((err) => {
+            console.error(err)
+            callback(err)
+        })
 }
 
 function createEvent(command) { //set appropriate actions for each event
     return new Promise((resolve, reject) => {
         console.log('command ' + command.type)
-        let event = new Event()
+        let event = new Event(command.type)
         if (command.type === 'create') {
-            event.populateEvent = createCommentEvent(command)
+            event.populateEvent = createCommentEvent
             //add handlers
         } else if (command.type === 'edit') {
-            event.populateEvent = createCommentEvent(command)
+            event.populateEvent = createCommentEvent
             //add handlers
         } else if (command.type === 'vote') {
-            event.populateEvent = createVoteEvent(command)
+            event.populateEvent = createVoteEvent
             //add handlers
         } else {
             reject(new Error('failed in createEvent()'))
         }
 
-        resolve()
+        resolve(event)
     })
 }
+
 function createCommentEvent(command) {
 
-    console.log('in createCommentEvent()')
-    this.authour_user_id = req.user
-    this.body = req['comment-body']
+    this.user_id = command.user_id
+    this.body = command.body
 
+    if (command.type == 'create') {
+        console.log('in create option')
+        this.comment_id = uuid.v4()
+        this.comment_level = command.comment_level
+        this.parent_id = command.parent_id
+    } else if (command.type == 'edit') {
+        this.comment_id = command.parent_id
+    }
     // if (req.mode == 'create') {    //if create mode, create an event and a new comment ID
     //     event.comment_id = uuid.v4()
     //     event.comment_level = req["comment-level"]
@@ -59,9 +71,12 @@ function createCommentEvent(command) {
     // }
 }
 
-function createVoteEvent(req, err_handler) {
+function createVoteEvent(command) {
 
-    console.log('in createVoteEvent()')
+    this.vote = command.vote
+    this.user_id = command.user_id
+    this.comment_id = command.comment_id
+
     // let event = new Event('editComment')
 
     // event.handler = function () {
@@ -70,27 +85,33 @@ function createVoteEvent(req, err_handler) {
 }
 
 
-function storeEvent(event) {
-    return new Promise((resolve, reject) => {
-        let query, args
-        if (event.type == 'createComment') {
-            query = 'INSERT INTO comment_event(event_id, comment_id, author_user_id, body, comment_level, parent_comment_id, time_posted, milliseconds_posted) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)'
-            args = [event.event_id, event.comment_id, req.user, event.body, event.comment_level, event.parent_id, event.time_stamp, event.getMilliseconds]
 
-        } else if (event.type == 'editComment') {
-            query = 'INSERT INTO comment_event(event_id, comment_id, author_user_id, body, comment_level, parent_comment_id, time_posted, milliseconds_posted) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)'
-            args = [event.event_id, event.comment_id, req.user, event.body, event.comment_level, event.parent_id, event.time_stamp, event.getMilliseconds]
+function storeEvent(event) {
+    console.log('in storeEvent(): ' + JSON.stringify(event))
+
+    return new Promise((resolve, reject) => {
+        let query;
+        let args;
+
+        if (event.type == 'create') {
+            query = 'INSERT INTO comment_event(event_id, comment_id, author_user_id, body, comment_level, time_posted, parent_comment_id, milliseconds_posted) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)'
+            args = [event.event_id, event.comment_id, event.user_id, event.body, event.comment_level, event.time_stamp.toISOString(), event.parent_id, event.time_stamp.getMilliseconds()]
+        } else if (event.type == 'edit') {
+            query = 'INSERT INTO comment_event(event_id, comment_id, author_user_id, body, comment_level, time_posted, parent_comment_id, milliseconds_posted) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)'
+            args = [event.event_id, event.comment_id, event.user_id, event.body, event.comment_level, event.time_stamp.toISOString(), event.parent_id, event.time_stamp.getMilliseconds()]
 
         } else if (event.type == 'vote') {
-            query = 'INSERT INTO vote_event(event_id, comment_id, author_user_id, time_posted, vote, milliseconds_posted) VALUES ( ?, ?, ?, ?, ?, ?)'
-            args = [event.event_id, req['comment_id'], req.user, event.time_stamp, req.vote, event.getMilliseconds]
+            query = 'INSERT INTO vote_event(event_id, comment_id, author_user_id, vote, time_posted, milliseconds_posted) VALUES ( ?, ?, ?, ?, ?, ?)'
+            args = [event.event_id, event.comment_id, event.user_id, event.vote, event.time_stamp.toISOString(), event.time_stamp.getMilliseconds()]
         }
 
-        mysqlHelper.sqlQuery(query, args, (failure) => {
-            if (!failure) {
+        console.log(args)
+
+        mysqlHelper.sqlQuery(query, args, (error) => {
+            if (!error) {
                 resolve()
             } else {
-                reject(failure)
+                reject(error)
             }
         })
     })

@@ -14,13 +14,19 @@ var jsonParser = bodyParser.json()
 
 
 router.post("/comment", jsonParser, authorization.authorizeUser, (req, res) => {
-
+    console.log(req.body.comment_body)
     commentMicroService.generateEvent({
         type: req.body.mode,
-        authour_user_id: req.user,
-        body: req.body.body
+        user_id: req.user._id,
+        body: req.body.comment_body,
+        comment_level: req.body.comment_level,
+        parent_id: req.body.target_id
     }, (err) => {
-        console.log(err)
+        if (!err) {
+            res.send('Comment Posted')
+        } else {
+            res.status(500).send("Couldn't submit comment")
+        }
     })
     // commentMicroService.createCommentEvent(req.body, (err) => {
     //     if (err == null) {
@@ -36,26 +42,18 @@ router.post("/comment", jsonParser, authorization.authorizeUser, (req, res) => {
 })
 
 router.post("/vote", jsonParser, authorization.authorizeUser, (req, res) => {
-    
     commentMicroService.generateEvent({
         type: 'vote',
-        authour_user_id: req.user,
-        vote: req.vote
+        user_id: req.user._id,
+        comment_id: req.body.comment_id,
+        vote: req.body.vote
     }, (err) => {
-        console.log(err)
+        if (!err) {
+            res.send('Vote Posted')
+        } else {
+            res.status(500).send("Couldn't submit vote")
+        }
     })
-
-
-    // commentMicroService.createVoteEvent(req.body, (err) => {
-    //     if (err == null) {
-    //         console.log("Vote Submitted")
-    //         return res.send("Comment posted")
-    //     } else {
-    //         console.log("Error Submitting Vote")
-    //         console.log(err)
-    //         return res.status(500).send("Couldn't Submit Vote")
-    //     }
-    // })
 })
 
 
