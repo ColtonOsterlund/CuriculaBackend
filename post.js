@@ -28,16 +28,6 @@ router.post("/comment", jsonParser, authorization.authorizeUser, (req, res) => {
             res.status(500).send("Couldn't submit comment")
         }
     })
-    // commentMicroService.createCommentEvent(req.body, (err) => {
-    //     if (err == null) {
-    //         console.log("Comment Event created")
-    //         return res.send("Comment posted")
-    //     } else {
-    //         console.log("Error creating Comment Event")
-    //         console.log(err)
-    //         return res.status(500).send("Couldn't post comment")
-    //     }
-    // })
 
 })
 

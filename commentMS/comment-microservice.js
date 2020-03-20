@@ -1,5 +1,6 @@
 const uuid = require('uuid')
 const mysqlHelper = require('../MySQLHelper.js')
+const am = require('./aggregate-managers.js')
 
 class Event {
     constructor(eventType) {
@@ -11,15 +12,16 @@ class Event {
 
 //each event will be created from command, populated, stored in event store, and finally sent to read store
 function generateEvent(command, callback) {
-    console.log('command accepted: ' + JSON.stringify(command))
+    //console.log('command accepted: ' + JSON.stringify(command))
     createEvent(command)
         .then((event) => {
             event.populateEvent(command)
-            console.log('populated event: ' + JSON.stringify(event))
+            //console.log('populated event: ' + JSON.stringify(event))
             return storeEvent(event)
         })
-        .then(() => {
+        .then((event) => {
             console.log('update aggregates')
+            am.updateAggregates(event)
         })
         .then(callback())
         .catch((err) => {
@@ -62,13 +64,6 @@ function createCommentEvent(command) {
     } else if (command.type == 'edit') {
         this.comment_id = command.parent_id
     }
-    // if (req.mode == 'create') {    //if create mode, create an event and a new comment ID
-    //     event.comment_id = uuid.v4()
-    //     event.comment_level = req["comment-level"]
-    //     event.parent_id = req["parent-comment-id"]
-    // } else if (req.mode == 'edit') {   //if edit more, create an event for given comment ID
-    //     event.comment_id = req["target-comment-id"]
-    // }
 }
 
 function createVoteEvent(command) {
@@ -76,18 +71,11 @@ function createVoteEvent(command) {
     this.vote = command.vote
     this.user_id = command.user_id
     this.comment_id = command.comment_id
-
-    // let event = new Event('editComment')
-
-    // event.handler = function () {
-    //     console.log('handling event')
-    // }
 }
 
 
 
 function storeEvent(event) {
-    console.log('in storeEvent(): ' + JSON.stringify(event))
 
     return new Promise((resolve, reject) => {
         let query;
@@ -105,11 +93,9 @@ function storeEvent(event) {
             args = [event.event_id, event.comment_id, event.user_id, event.vote, event.time_stamp.toISOString(), event.time_stamp.getMilliseconds()]
         }
 
-        console.log(args)
-
         mysqlHelper.sqlQuery(query, args, (error) => {
             if (!error) {
-                resolve()
+                resolve(event)
             } else {
                 reject(error)
             }
