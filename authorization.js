@@ -178,14 +178,17 @@ router.post('/user/login', jsonParser, (req, res) => {
 		if (objects[0] == undefined) { //email did not match - user not in database
 			//console.log("got here 2")
 
-			console.log("username did not exist");
+			console.log("email did not exist");
 
 
-			return res.json([{message: "Username or Password is Incorrect"}]);
+			return res.json([{message: "Email or Password is Incorrect"}]);
 		}
 
 
 		bcrypt.compareSync(password, objects[0].password, function (err, res) { //compares password sent with hashed password in database
+			
+			console.log(res);
+			
 			if (err) {
 				return res.json([{message: "error comparing password with stored hashed password: " + err}])
 			}
