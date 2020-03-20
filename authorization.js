@@ -206,6 +206,8 @@ router.post('/user/login', jsonParser, (req, res) => {
 			return res.json([{message: "Email or Password is Incorrect"}]);
 		}
 
+		console.log(objects[0].password)
+
 
 		bcrypt.compare(password, objects[0].password, function (err, result) { //compares password sent with hashed password in database
 			
