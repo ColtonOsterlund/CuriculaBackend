@@ -517,8 +517,16 @@ router.get("/videos", jsonParser, (req, res) => {
     }
 })
 
-router.get('/comment', jsonParser, (req, res) => {
+router.get('/comment', jsonParser, (req, res, next) => {
+    if (req.header('auth-token')) {
+        authorization.authorizeUser(req, res, next)
+    } else {
+        next()
+    }
+}, (req, res) => {
 
+    //check if logged in user by seeing if req.user._id is defined
+    
     var commentID = req.query.commentID
     var childID = req.query.childID
     var parentID = req.query.parentID
@@ -752,8 +760,17 @@ router.get('/comment', jsonParser, (req, res) => {
     }
 })
 
-router.get('/comment', jsonParser, (req, res) => {
+router.get('/comment', jsonParser, (req, res, next) => {
+    if (req.header('auth-token')) {
+        authorization.authorizeUser(req, res, next)
+    } else {
+        next()
+    }
+}, (req, res) => {
 
+    //check if logged in user by seeing if req.user._id is defined
+
+    console.log('authorized user: ' + req.user._id)
     var postID = req.query.postID
     var parentID = req.query.parentID
 
