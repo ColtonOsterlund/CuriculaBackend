@@ -177,6 +177,10 @@ router.post('/user/login', jsonParser, (req, res) => {
 
 		if (objects[0] == undefined) { //email did not match - user not in database
 			//console.log("got here 2")
+
+			console.log("username did not exist");
+
+
 			return res.json([{message: "Username or Password is Incorrect"}])
 		}
 
@@ -186,6 +190,9 @@ router.post('/user/login', jsonParser, (req, res) => {
 			}
 			else if (res != null) {
 				//passwords match
+
+				console.log("password matched");
+
 
 				//create and assign JWT
 				token = jwt.sign({ _id: objects[0].userID }, process.env.TOKEN_SECRET, { expiresIn: '1h' }) //change the id from username to the userID
@@ -207,6 +214,7 @@ router.post('/user/login', jsonParser, (req, res) => {
 			}
 			else {
 				//passwords dont match
+				console.log("password was wrong");
 				return res.json([{message: "Username or Password is Incorrect"}])
 			}
 		})
