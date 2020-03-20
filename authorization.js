@@ -74,7 +74,7 @@ router.post('/user/register', jsonParser, (req, res) => {
 	var hashedPassword = bcrypt.hashSync(req.body.password, 10, function (err, hash) {
 		if (err) {
 			console.log("error while hashing password: " + err)
-			return res.json([{error: err}])
+			return res.status(500).json([{error: err}])
 		}
 	})
 	//use hashSync so that it is synchronous and finished the hash before the next code executes - implements a callback function itself
@@ -85,7 +85,7 @@ router.post('/user/register', jsonParser, (req, res) => {
 	mysqlHelper.sqlQuery("SELECT * FROM user WHERE username = ? OR email = ?", [username, email], (err, objects) => {
 
 		if (err) {
-			res.json([{message: "Server Error"}])
+			res.status(500).json([{message: "Server Error"}])
 			return
 		}
 
@@ -118,19 +118,19 @@ router.post('/user/register', jsonParser, (req, res) => {
 									
                     mysqlHelper.sqlQuery("INSERT INTO schoolRelUser(userID, schoolID) VALUES (?, ?)", [userID, schoolID], (err, objects) =>{
                         if(err){
-                            res.json([{message: "Server Error: " + err}])
+                            res.status(500).json([{message: "Server Error: " + err}])
                             return
 						}
 						else{
 							mysqlHelper.sqlQuery("INSERT INTO userRelMajor(userID, majProgramID) VALUES (?, ?)", [userID, majorProgramID], (err, objects) =>{
 								if(err){
-									res.json([{message: "Server Error: " + err}])
+									res.status(500).json([{message: "Server Error: " + err}])
 									return
 								}
 								else{
 									mysqlHelper.sqlQuery("INSERT INTO userRelMinor(userID, minProgramID) VALUES (?, ?)", [userID, minorProgramID], (err, objects) =>{
 										if(err){
-											res.json([{message: "Server Error: " + err}])
+											res.status(500).json([{message: "Server Error: " + err}])
 											return
 										}
 										else{
@@ -172,7 +172,7 @@ router.post('/user/login', jsonParser, (req, res) => {
 		if (err != null) {
 			//console.log("got here 1")
 			console.log("ERROR : " + err)
-			return res.json([{message: "Server Error"}])
+			return res.status(500).json([{message: "Server Error"}])
 		}
 
 		if (objects[0] == undefined) { //email did not match - user not in database
@@ -187,7 +187,7 @@ router.post('/user/login', jsonParser, (req, res) => {
 
 		bcrypt.compareSync(password, objects[0].password, function (err, res) { //compares password sent with hashed password in database
 			if (err) {
-				return res.json([{message: "error comparing password with stored hashed password: " + err}])
+				return res.status(500).json([{message: "error comparing password with stored hashed password: " + err}])
 			}
 			else if (res == true) {
 				//passwords match
@@ -228,7 +228,7 @@ router.post('/user/logout', jsonParser, authorizeUser, (req, res) => {
 
 	mysqlHelper.sqlQuery("INSERT INTO blacklistedjwts (jwt, deleteNext) VALUES (?, ?)", [token, "0"], (err, rows) => {
 		if (err != null) {
-			return res.json([{message: err}])
+			return res.status(500).json([{message: + "Error inserting into blacklisted jwts:   " + err}])
 		}
 		else {
 			return res.json([{message: "Success"}])
@@ -243,7 +243,7 @@ router.get('/user/user-profile', jsonParser, authorizeUser, (req, res) => {
 
 	mysqlHelper.sqlQuery("SELECT * FROM user AS U WHERE U.userID = ?", [userID], (err, objects) => {
 		if (err != null) {
-			return res.json([{message: err}])
+			return res.status(500).json([{message: err}])
 		}
 		else {
 			var jsonObjects = []
