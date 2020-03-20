@@ -184,6 +184,8 @@ router.post('/user/login', jsonParser, (req, res) => {
 			return res.json([{message: "Username or Password is Incorrect"}]);
 		}
 
+		var login = 0;
+
 		bcrypt.compareSync(password, objects[0].password, function (err, res) { //compares password sent with hashed password in database
 			if (err) {
 				return res.json([{message: "error comparing password with stored hashed password: " + err}])
@@ -193,35 +195,39 @@ router.post('/user/login', jsonParser, (req, res) => {
 
 				console.log("password matched");
 
-
+				login = 1;
 			}
 			else {
 				//passwords dont match
 				console.log("password was wrong");
 				return res.json([{message: "Username or Password is Incorrect"}]);
 			}
+
+
 		})
 
-		//at this point it will have been returned if the login was not succesful
-		//res.send("logged in")
-
-		//create and assign JWT
-		token = jwt.sign({ _id: objects[0].userID }, process.env.TOKEN_SECRET, { expiresIn: '1h' }) //change the id from username to the userID
-
-		var jsonObjects = []
-
-		var loginObject = {
-			userUUID: objects[0].userID,
-			jwt: token
-		}
-
-		jsonObjects.push(loginObject);
-
-		res.header('user-uuid', objects[0].userID)
-		res.header('auth-token', token)
-		return res.send(JSON.stringify(jsonObjects)) //this sends back the UUID
-
 		//console.log("got here 4")
+
+		//at this point it will have been returned if the login was not succesful
+			//res.send("logged in")
+
+		while(!login){};
+
+			//create and assign JWT
+			token = jwt.sign({ _id: objects[0].userID }, process.env.TOKEN_SECRET, { expiresIn: '1h' }) //change the id from username to the userID
+
+			var jsonObjects = []
+
+			var loginObject = {
+				userUUID: objects[0].userID,
+				jwt: token
+			}
+
+			jsonObjects.push(loginObject);
+
+			res.header('user-uuid', objects[0].userID)
+			res.header('auth-token', token)
+			return res.send(JSON.stringify(jsonObjects)) //this sends back the UUID
 
 	})
 
