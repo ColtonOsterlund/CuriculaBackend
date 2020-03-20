@@ -198,7 +198,7 @@ router.post('/user/login', jsonParser, (req, res) => {
 			else {
 				//passwords dont match
 				console.log("password was wrong");
-				return res.json([{message: "Username or Password is Incorrect"}])
+				return res.send(json([{message: "Username or Password is Incorrect"}]));
 			}
 		})
 
