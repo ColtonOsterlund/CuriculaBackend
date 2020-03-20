@@ -71,7 +71,7 @@ router.post('/user/register', jsonParser, (req, res) => {
 	var majorProgramID = req.body.majorProgramID
 	var minorProgramID = req.body.minorProgramID
 	var schoolID = req.body.schoolID
-	var hashedPassword = bcrypt.hash(req.body.password, 10, function (err, hash) {
+	bcrypt.hash(req.body.password, 10, function (err, hash) {
 		if (err) {
 			console.log("error while hashing password: " + err)
 			return res.status(500).json([{error: err}])
@@ -125,7 +125,7 @@ router.post('/user/register', jsonParser, (req, res) => {
 					}
 
 					//save user to database
-					mysqlHelper.sqlQuery("INSERT INTO user (username, email, password, userID, firstName, lastName) VALUES (?, ?, ?, ?, ?, ?);", [username, email, hashedPassword, userID, firstName, lastName], (err, objects) => { //TODO: CHANGE THIS TO MATCH OUR DATABASE SCHEMA
+					mysqlHelper.sqlQuery("INSERT INTO user (username, email, password, userID, firstName, lastName) VALUES (?, ?, ?, ?, ?, ?);", [username, email, hash, userID, firstName, lastName], (err, objects) => { //TODO: CHANGE THIS TO MATCH OUR DATABASE SCHEMA
 						if (err) {
 							res.status(501).json([{message: "Server Database Query Error"}])
 							return
@@ -210,8 +210,6 @@ router.post('/user/login', jsonParser, (req, res) => {
 
 
 		bcrypt.compare(password, objects[0].password, function (err, result) { //compares password sent with hashed password in database
-			
-			console.log(result); //its not even printing this
 			
 			if (err) {
 				return res.status(500).json([{message: "error comparing password with stored hashed password: " + err}])
