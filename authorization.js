@@ -181,7 +181,7 @@ router.post('/user/login', jsonParser, (req, res) => {
 			console.log("username did not exist");
 
 
-			return res.send(json([{message: "Username or Password is Incorrect"}]));
+			return res.json([{message: "Username or Password is Incorrect"}]);
 		}
 
 		bcrypt.compareSync(password, objects[0].password, function (err, res) { //compares password sent with hashed password in database
@@ -198,7 +198,7 @@ router.post('/user/login', jsonParser, (req, res) => {
 			else {
 				//passwords dont match
 				console.log("password was wrong");
-				return res.send(json([{message: "Username or Password is Incorrect"}]));
+				return res.json([{message: "Username or Password is Incorrect"}]);
 			}
 		})
 
