@@ -104,7 +104,7 @@ router.post('/user/register', jsonParser, (req, res) => {
 				return
 			}
 			if(minorProgramID == undefined){
-				res.json([{message: "Must specify a majorProgramID - (IF NO MINOR, SEND 0 AS ID)"}])
+				res.json([{message: "Must specify a minorProgramID - (IF NO MINOR, SEND 0 AS ID)"}])
 				return
 			}
 
@@ -194,23 +194,6 @@ router.post('/user/login', jsonParser, (req, res) => {
 				console.log("password matched");
 
 
-				//create and assign JWT
-				token = jwt.sign({ _id: objects[0].userID }, process.env.TOKEN_SECRET, { expiresIn: '1h' }) //change the id from username to the userID
-
-				var jsonObjects = []
-
-				var loginObject = {
-					userUUID: objects[0].userID,
-					jwt: token
-				}
-
-				jsonObjects.push(loginObject);
-
-				res.header('user-uuid', objects[0].userID)
-				res.header('auth-token', token)
-				return res.send(JSON.stringify(jsonObjects)) //this sends back the UUID
-
-
 			}
 			else {
 				//passwords dont match
@@ -221,6 +204,22 @@ router.post('/user/login', jsonParser, (req, res) => {
 
 		//at this point it will have been returned if the login was not succesful
 		//res.send("logged in")
+
+		//create and assign JWT
+		token = jwt.sign({ _id: objects[0].userID }, process.env.TOKEN_SECRET, { expiresIn: '1h' }) //change the id from username to the userID
+
+		var jsonObjects = []
+
+		var loginObject = {
+			userUUID: objects[0].userID,
+			jwt: token
+		}
+
+		jsonObjects.push(loginObject);
+
+		res.header('user-uuid', objects[0].userID)
+		res.header('auth-token', token)
+		return res.send(JSON.stringify(jsonObjects)) //this sends back the UUID
 
 		//console.log("got here 4")
 
