@@ -189,9 +189,11 @@ router.post('/user/login', jsonParser, (req, res) => {
 		}
 
 
-		bcrypt.compare(password, objects[0].password, function (err, result) { //compares password sent with hashed password in database
+		var storedPass = objects[0].password
+
+		bcrypt.compare(password, storedPass, function (err, result) { //compares password sent with hashed password in database
 			
-			console.log(result); //its not even printing this
+			
 			
 			if (err) {
 				return res.json([{message: "error comparing password with stored hashed password: " + err}])
