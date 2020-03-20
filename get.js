@@ -515,328 +515,110 @@ router.get("/videos", jsonParser, (req, res) => {
         });
 
     }
-
-    router.get('/comment', jsonParser, (req, res) => {
-	
-        var commentID = req.query.commentID
-        var childID = req.query.childID
-        var parentID = req.query.parentID
-        
-        if(commentID == undefined && parentID == undefined && childID == undefined){ //NO QUERY PARAMETERS
-            mysqlHelper.sqlQuery("SELECT * FROM comment", null, (err, rows) => {
-                if(err != null){
-                    return res.send("Error: " + err)
-                }
-                else{
-                    var jsonObjects = []
-                    
-                   rows.forEach(function(comment){
-                        var commentObject = {
-                            commentID: comment.commentID, 
-                            authorUser: comment.authorUser, 
-                            datePosted: comment.datePosted,
-                            text: comment.text, 
-                            counter: comment.counter}
-    
-						jsonObjects.push(comment);
-                   })
-    
-                    return res.send(JSON.stringify(jsonObjects))
-                }
-            });
-        }
-    
-        else if(commentID != undefined && parentID == undefined && childID == undefined){
-            mysqlHelper.sqlQuery("SELECT * FROM comment WHERE commentID = ?", [commentID], (err, objects) => { //callback function so that query loads before data is checked/sent back to user
-    
-                if(err != null){
-                    return console.log("ERROR : " + err)
-                }
-    
-                if(objects[0] == undefined){ //childComment did not match - childComment not in database
-                    return res.send("Parent Comment ID is Incorrect")
-                }
-                
-                var jsonObjects = []
-                        
-                rows.forEach(function(comment){
-                        var commentObject = {
-                            commentID: comment.commentID, 
-                            authorUser: comment.authorUser, 
-                            datePosted: comment.datePosted,
-                            text: comment.text, 
-                            counter: comment.counter}
-    
-                    jsonObjects.push(comment);
-                })
-    
-                return res.send(JSON.stringify(jsonObjects)) //this sends all childComment objects
-            });
-        }
-        
-        else if(commentID != undefined && parentID != undefined && childID == undefined){
-            mysqlHelper.sqlQuery("SELECT * FROM comment AS C, parentComment AS P WHERE C.commentID = P.parentID AND C.commentID = ? AND P.parentID = ?", [commentID, parentID], (err, objects) => { //callback function so that query loads before data is checked/sent back to user
-    
-                if(err != null){
-                    return console.log("ERROR : " + err)
-                }
-    
-                if(objects[0] == undefined){ //childComment did not match - childComment not in database
-                    return res.send("Parent Comment ID is Incorrect")
-                }
-                
-                var jsonObjects = []
-                        
-                rows.forEach(function(comment){
-                        var commentObject = {
-                            commentID: comment.commentID, 
-                            authorUser: comment.authorUser, 
-                            datePosted: comment.datePosted,
-                            text: comment.text, 
-                            counter: comment.counter}
-    
-                    jsonObjects.push(comment);
-                })
-    
-                return res.send(JSON.stringify(jsonObjects)) //this sends all childComment objects
-            });
-        }
-        
-        else if(commentID == undefined && parentID != undefined && childID != undefined){
-            mysqlHelper.sqlQuery("SELECT * FROM comment AS C, parentComment AS P, childComment AS CC WHERE CC.childID = ? AND P.parentID = ? AND CC.childID = C.commentID AND P.parentID = C.commentID", [childID, parentID], (err, objects) => { //callback function so that query loads before data is checked/sent back to user
-    
-                if(err != null){
-                    return console.log("ERROR : " + err)
-                }
-    
-                if(objects[0] == undefined){ //childComment did not match - childComment not in database
-                    return res.send("Parent Comment ID is Incorrect")
-                }
-                
-                var jsonObjects = []
-                        
-                rows.forEach(function(comment){
-                        var commentObject = {
-                            commentID: comment.commentID, 
-                            authorUser: comment.authorUser, 
-                            datePosted: comment.datePosted,
-                            text: comment.text, 
-                            counter: comment.counter}
-    
-                    jsonObjects.push(comment);
-                })
-    
-                return res.send(JSON.stringify(jsonObjects)) //this sends all childComment objects
-            });
-        }
-        
-        else if(commentID != undefined && parentID == undefined && childID != undefined){
-            mysqlHelper.sqlQuery("SELECT * FROM comment AS C, childComment AS CC WHERE CC.childID = ? AND C.commentID = ? AND CC.childID = C.commentID", [childID, commentID], (err, objects) => { //callback function so that query loads before data is checked/sent back to user
-    
-                if(err != null){
-                    return console.log("ERROR : " + err)
-                }
-    
-                if(objects[0] == undefined){ //childComment did not match - childComment not in database
-                    return res.send("Parent Comment ID is Incorrect")
-                }
-                
-                var jsonObjects = []
-                        
-                rows.forEach(function(comment){
-                        var commentObject = {
-                            commentID: comment.commentID, 
-                            authorUser: comment.authorUser, 
-                            datePosted: comment.datePosted,
-                            text: comment.text, 
-                            counter: comment.counter}
-    
-                    jsonObjects.push(comment);
-                })
-    
-                return res.send(JSON.stringify(jsonObjects)) //this sends all childComment objects
-            });
-        }
-        
-        else if(commentID == undefined && parentID == undefined && childID != undefined){
-            mysqlHelper.sqlQuery("SELECT * FROM comment AS C, childComment AS CC WHERE CC.childID = ? AND CC.childID = C.commentID", [childID], (err, objects) => { //callback function so that query loads before data is checked/sent back to user
-    
-                if(err != null){
-                    return console.log("ERROR : " + err)
-                }
-    
-                if(objects[0] == undefined){ //childComment did not match - childComment not in database
-                    return res.send("Parent Comment ID is Incorrect")
-                }
-                
-                var jsonObjects = []
-                        
-                rows.forEach(function(comment){
-                        var commentObject = {
-                            commentID: comment.commentID, 
-                            authorUser: comment.authorUser, 
-                            datePosted: comment.datePosted,
-                            text: comment.text, 
-                            counter: comment.counter}
-    
-                    jsonObjects.push(comment);
-                })
-    
-                return res.send(JSON.stringify(jsonObjects)) //this sends all childComment objects
-            });
-        }
-        
-        else if(commentID == undefined && parentID != undefined && childID == undefined){
-            mysqlHelper.sqlQuery("SELECT * FROM comment AS C, parentComment AS P WHERE P.parentID = ? AND P.parentID = C.commentID", [parentID], (err, objects) => { //callback function so that query loads before data is checked/sent back to user
-    
-                if(err != null){
-                    return console.log("ERROR : " + err)
-                }
-    
-                if(objects[0] == undefined){ //childComment did not match - childComment not in database
-                    return res.send("Parent Comment ID is Incorrect")
-                }
-                
-                var jsonObjects = []
-                        
-                rows.forEach(function(comment){
-                        var commentObject = {
-                            commentID: comment.commentID, 
-                            authorUser: comment.authorUser, 
-                            datePosted: comment.datePosted,
-                            text: comment.text, 
-                            counter: comment.counter}
-    
-                    jsonObjects.push(comment);
-                })
-    
-                return res.send(JSON.stringify(jsonObjects)) //this sends all childComment objects
-            });
-        }
-        
-        else if(commentID != undefined && parentID != undefined && childID != undefined){
-            mysqlHelper.sqlQuery("SELECT * FROM comment AS C, parentComment AS P, childComment AS CC WHERE CC.childID = ? AND P.parentID = ? AND C.commentID = ? AND CC.childID = C.commentID AND P.parentID = C.commentID", [childID, parentID, commentID], (err, objects) => { //callback function so that query loads before data is checked/sent back to user
-    
-                if(err != null){
-                    return console.log("ERROR : " + err)
-                }
-    
-                if(objects[0] == undefined){ //childComment did not match - childComment not in database
-                    return res.send("Parent Comment ID is Incorrect")
-                }
-                
-                var jsonObjects = []
-                        
-                rows.forEach(function(comment){
-                        var commentObject = {
-                            commentID: comment.commentID, 
-                            authorUser: comment.authorUser, 
-                            datePosted: comment.datePosted,
-                            text: comment.text, 
-                            counter: comment.counter}
-    
-                    jsonObjects.push(comment);
-                })
-    
-                return res.send(JSON.stringify(jsonObjects)) //this sends all childComment objects
-            });
-        }
-    })
-    
-
 })
 
 
-router.get('/comment', jsonParser, (req, res) => {
-	
-	var postID = req.query.postID
-	var parentID = req.query.parentID
-	
-	if(postID != undefined && parentID != undefined){ //NO QUERY PARAMETERS
+router.get('/comment', jsonParser, (req, res, next) => {
+    if (req.header('auth-token')) {
+        authorization.authorizeUser(req, res, next)
+        console.log('authorized: ' + req.user._id)
+    } else {
+        next()
+    }
+}, (req, res) => {
+
+    var postID = req.query.postID
+    var parentID = req.query.parentID
+
+    if (postID != undefined && parentID != undefined) { //NO QUERY PARAMETERS
         mysqlHelper.sqlQuery("SELECT * FROM comments WHERE commentID IN (SELECT parentID FROM parentcomment WHERE postID = ?) OR (SELECT childID FROM childcomment WHERE parentID = ?)", [postID, parentID], (err, rows) => {
-            if(err != null){
+            if (err != null) {
                 return res.send("Error: " + err)
             }
-            else{
+            else {
                 var jsonObjects = []
-                
-               rows.forEach(function(comment){
-                    var commentObject = {
-						commentID: comment.commentID, 
-						authorUser: comment.authorUser, 
-						datePosted: comment.datePosted,
-						text: comment.text, 
-						counter: comment.counter}
 
-				jsonObjects.push(commentObject);
-			   })
+                rows.forEach(function (comment) {
+                    var commentObject = {
+                        commentID: comment.commentID,
+                        authorUser: comment.authorUser,
+                        datePosted: comment.datePosted,
+                        text: comment.text,
+                        counter: comment.counter
+                    }
+
+                    jsonObjects.push(commentObject);
+                })
 
                 return res.send(JSON.stringify(jsonObjects))
             }
         });
-    } else if(postID != undefined && parentID == undefined){ //NO QUERY PARAMETERS
+    } else if (postID != undefined && parentID == undefined) { //NO QUERY PARAMETERS
         console.log("querying using postID " + postID)
         mysqlHelper.sqlQuery("SELECT * FROM comments WHERE commentID IN (SELECT parentID FROM parentcomment WHERE postID = ?)", [postID], (err, rows) => {
-            if(err != null){
+            if (err != null) {
                 return res.send("Error: " + err)
             }
-            else{
+            else {
                 var jsonObjects = []
-                
-               rows.forEach(function(comment){
-                    var commentObject = {
-						commentID: comment.commentID, 
-						authorUser: comment.authorUser, 
-						datePosted: comment.datePosted,
-						text: comment.text, 
-						counter: comment.counter}
 
-				jsonObjects.push(commentObject);
-			   })
+                rows.forEach(function (comment) {
+                    var commentObject = {
+                        commentID: comment.commentID,
+                        authorUser: comment.authorUser,
+                        datePosted: comment.datePosted,
+                        text: comment.text,
+                        counter: comment.counter
+                    }
+
+                    jsonObjects.push(commentObject);
+                })
 
                 return res.send(JSON.stringify(jsonObjects))
             }
         });
-    }else if(postID == undefined && parentID != undefined){
+    } else if (postID == undefined && parentID != undefined) {
         mysqlHelper.sqlQuery("SELECT * FROM comments WHERE commentID IN (SELECT childID FROM childcomment WHERE parentID = ?)", [parentID], (err, rows) => {
-            if(err != null){
+            if (err != null) {
                 return res.send("Error: " + err)//ERROR!!!!!!!!!!!!!!!!!!!
             }
-            else{
+            else {
                 var jsonObjects = []
-                
-               rows.forEach(function(comment){
-                    var commentObject = {
-						commentID: comment.commentID, 
-						authorUser: comment.authorUser, 
-						datePosted: comment.datePosted,
-						text: comment.text, 
-						counter: comment.counter}
 
-				jsonObjects.push(commentObject);
-			   })
+                rows.forEach(function (comment) {
+                    var commentObject = {
+                        commentID: comment.commentID,
+                        authorUser: comment.authorUser,
+                        datePosted: comment.datePosted,
+                        text: comment.text,
+                        counter: comment.counter
+                    }
+
+                    jsonObjects.push(commentObject);
+                })
 
                 return res.send(JSON.stringify(jsonObjects))
             }
         });
-    } else if(postID == undefined  && parentID == undefined){ //NO QUERY PARAMETERS
+    } else if (postID == undefined && parentID == undefined) { //NO QUERY PARAMETERS
         mysqlHelper.sqlQuery("SELECT * FROM comments", null, (err, rows) => {
-            if(err != null){
+            if (err != null) {
                 return res.send("Error: " + err)
             }
-            else{
+            else {
                 var jsonObjects = []
-                
-               rows.forEach(function(comment){
-                    var commentObject = {
-						commentID: comment.commentID, 
-						authorUser: comment.authorUser, 
-						datePosted: comment.datePosted,
-						text: comment.text, 
-						counter: comment.counter}
 
-				jsonObjects.push(commentObject);
-			   })
+                rows.forEach(function (comment) {
+                    var commentObject = {
+                        commentID: comment.commentID,
+                        authorUser: comment.authorUser,
+                        datePosted: comment.datePosted,
+                        text: comment.text,
+                        counter: comment.counter
+                    }
+
+                    jsonObjects.push(commentObject);
+                })
 
                 return res.send(JSON.stringify(jsonObjects))
             }
