@@ -71,89 +71,93 @@ router.post('/user/register', jsonParser, (req, res) => {
 	var majorProgramID = req.body.majorProgramID
 	var minorProgramID = req.body.minorProgramID
 	var schoolID = req.body.schoolID
-	var hashedPassword = bcrypt.hashSync(req.body.password, 10, function (err, hash) {
+	var hashedPassword = bcrypt.hash(req.body.password, 10, function (err, hash) {
 		if (err) {
 			console.log("error while hashing password: " + err)
 			return res.json([{error: err}])
 		}
-	})
-	//use hashSync so that it is synchronous and finished the hash before the next code executes - implements a callback function itself
 
+		else{
 
-	var userID = uuid.v4();
+			var userID = uuid.v4();
 
-	mysqlHelper.sqlQuery("SELECT * FROM user WHERE username = ? OR email = ?", [username, email], (err, objects) => {
+			mysqlHelper.sqlQuery("SELECT * FROM user WHERE username = ? OR email = ?", [username, email], (err, objects) => {
 
-		if (err) {
-			res.json([{message: "Server Error"}])
-			return
-		}
-
-		if (objects[0] != undefined) {
-			res.json([{message: "Username or Email has Already Been Used"}])
-			return
-		}
-		else {
-
-			if(schoolID == undefined){
-				res.json([{message: "Must specify a schoolID"}])
-				return
-			}
-			if(majorProgramID == undefined){
-				res.json([{message: "Must specify a majorProgramID"}])
-				return
-			}
-			if(minorProgramID == undefined){
-				res.json([{message: "Must specify a minorProgramID - (IF NO MINOR, SEND 0 AS ID)"}])
-				return
-			}
-
-			//save user to database
-			mysqlHelper.sqlQuery("INSERT INTO user (username, email, password, userID, firstName, lastName) VALUES (?, ?, ?, ?, ?, ?);", [username, email, hashedPassword, userID, firstName, lastName], (err, objects) => { //TODO: CHANGE THIS TO MATCH OUR DATABASE SCHEMA
 				if (err) {
-					res.status(501).json([{message: "Server Database Query Error"}])
+					res.json([{message: "Server Error"}])
 					return
 				}
-				else{
-									
-                    mysqlHelper.sqlQuery("INSERT INTO schoolRelUser(userID, schoolID) VALUES (?, ?)", [userID, schoolID], (err, objects) =>{
-                        if(err){
-                            res.json([{message: "Server Error: " + err}])
-                            return
+
+				if (objects[0] != undefined) {
+					res.json([{message: "Username or Email has Already Been Used"}])
+					return
+				}
+				else {
+
+					if(schoolID == undefined){
+						res.json([{message: "Must specify a schoolID"}])
+						return
+					}
+					if(majorProgramID == undefined){
+						res.json([{message: "Must specify a majorProgramID"}])
+						return
+					}
+					if(minorProgramID == undefined){
+						res.json([{message: "Must specify a minorProgramID - (IF NO MINOR, SEND 0 AS ID)"}])
+						return
+					}
+
+					//save user to database
+					mysqlHelper.sqlQuery("INSERT INTO user (username, email, password, userID, firstName, lastName) VALUES (?, ?, ?, ?, ?, ?);", [username, email, hashedPassword, userID, firstName, lastName], (err, objects) => { //TODO: CHANGE THIS TO MATCH OUR DATABASE SCHEMA
+						if (err) {
+							res.status(501).json([{message: "Server Database Query Error"}])
+							return
 						}
 						else{
-							mysqlHelper.sqlQuery("INSERT INTO userRelMajor(userID, majProgramID) VALUES (?, ?)", [userID, majorProgramID], (err, objects) =>{
+											
+							mysqlHelper.sqlQuery("INSERT INTO schoolRelUser(userID, schoolID) VALUES (?, ?)", [userID, schoolID], (err, objects) =>{
 								if(err){
 									res.json([{message: "Server Error: " + err}])
 									return
 								}
 								else{
-									mysqlHelper.sqlQuery("INSERT INTO userRelMinor(userID, minProgramID) VALUES (?, ?)", [userID, minorProgramID], (err, objects) =>{
+									mysqlHelper.sqlQuery("INSERT INTO userRelMajor(userID, majProgramID) VALUES (?, ?)", [userID, majorProgramID], (err, objects) =>{
 										if(err){
 											res.json([{message: "Server Error: " + err}])
 											return
 										}
 										else{
-											var jsonObjects = []
-					
-											var registrationObject = {
-												userUUID: userID
-											}
-											
-											jsonObjects.push(registrationObject);
-											
-											return res.header('user-uuid', userID).send(JSON.stringify(jsonObjects)) //this sends back the UUID
+											mysqlHelper.sqlQuery("INSERT INTO userRelMinor(userID, minProgramID) VALUES (?, ?)", [userID, minorProgramID], (err, objects) =>{
+												if(err){
+													res.json([{message: "Server Error: " + err}])
+													return
+												}
+												else{
+													var jsonObjects = []
+							
+													var registrationObject = {
+														userUUID: userID
+													}
+													
+													jsonObjects.push(registrationObject);
+													
+													return res.header('user-uuid', userID).send(JSON.stringify(jsonObjects)) //this sends back the UUID
+												}
+											})
 										}
 									})
 								}
+
 							})
 						}
-
-                    })
+					})
 				}
 			})
-		}
-	})
+
+				}
+
+			})
+	
 
 })
 
@@ -185,9 +189,9 @@ router.post('/user/login', jsonParser, (req, res) => {
 		}
 
 
-		bcrypt.compareSync(password, objects[0].password, function (err, res) { //compares password sent with hashed password in database
+		bcrypt.compare(password, objects[0].password, function (err, res) { //compares password sent with hashed password in database
 			
-			console.log(res);
+			console.log(res); //its not even printing this
 			
 			if (err) {
 				return res.json([{message: "error comparing password with stored hashed password: " + err}])
