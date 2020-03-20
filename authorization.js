@@ -189,7 +189,7 @@ router.post('/user/login', jsonParser, (req, res) => {
 		}
 
 
-		//var storedPass = objects[0].password
+		var storedPass = objects[0].password
 		console.log(storedPass)
 
 		bcrypt.compare(password, storedPass, function (err, result) { //compares password sent with hashed password in database
