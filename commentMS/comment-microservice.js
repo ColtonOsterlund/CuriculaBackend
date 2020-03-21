@@ -36,10 +36,14 @@ function readComments(commentQuery, err) {
 
 
         //return array with parent comments. Check if user_id is in commentQuery, if so make sure to include how the user voted on each comment being sent back
+        //the format you return should be relavant to the microservice and doesn't neceserily have to adhere to the API doc. It is upto the API end point to format it
+        //in accordance with the API contract
     } else if (commentQuery.comment_level == 1) {
 
-        
+
         //return array with parent comments. Check if user_id is in commentQuery, if so make sure to include how the user voted on each comment being sent back
+        //the format you return should be relavant to the microservice and doesn't neceserily have to adhere to the API doc. It is upto the API end point to format it
+        //in accordance with the API contract
     }
 }
 
