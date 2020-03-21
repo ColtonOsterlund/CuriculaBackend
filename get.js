@@ -642,6 +642,8 @@ router.get('/comments/parent', jsonParser, (req, res, next) => {
         comment_level: 0,
         comment_id: req.query.comment_id,
         user_id: req.user._id       //this will be optional, it'll automatically disappear is user wasnt authenticated
+    }, (err) => {
+        
     })
 
      //format the output as specified in the API contract and send it back to the front end
@@ -661,6 +663,8 @@ router.get('/comments/parent', jsonParser, (req, res, next) => {
         comment_level: 0,
         comment_id: req.query.comment_id,
         user_id: req.user._id       //this will be optional, it'll automatically disappear is user wasnt authenticated
+    }, (err) => {
+
     })
 
 
