@@ -30,6 +30,19 @@ function generateEvent(command, callback) {
         })
 }
 
+function readComments(commentQuery, err) {
+
+    if (commentQuery.comment_level == 0) {
+
+
+        //return array with parent comments. Check if user_id is in commentQuery, if so make sure to include how the user voted on each comment being sent back
+    } else if (commentQuery.comment_level == 1) {
+
+        
+        //return array with parent comments. Check if user_id is in commentQuery, if so make sure to include how the user voted on each comment being sent back
+    }
+}
+
 function createEvent(command) { //set appropriate actions for each event
     return new Promise((resolve, reject) => {
         console.log('command ' + command.type)
@@ -104,3 +117,4 @@ function storeEvent(event) {
 }
 
 module.exports.generateEvent = generateEvent;
+module.exports.readComments = readComments;
