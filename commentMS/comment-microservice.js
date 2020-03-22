@@ -33,15 +33,74 @@ function generateEvent(command, callback) {
 function readComments(commentQuery, err) {
 
     if (commentQuery.comment_level == 0) {
+		
+		mysqlHelper.sqlQuery("SELECT * FROM parentComment WHERE parentID = ? AND userID = ?)", [commentQuery.comment_id, commentQuery.user_id], (err, rows) => {
+            if (err != null) {
+                return res.send("Error: " + err)
+            }
+            else {
+                var jsonObjects = []
 
+                rows.forEach(function (comment) {
+                    var commentObject = {
+						
+						//need to add all these stuff to parentComment table
+						
+                        parentID: comment.commentID,
+						commentContent: comment.commentContent,
+                        userID: comment.userID,
+						postID: comment:videoID,
+                        timeStamp: comment.timeStamp,
+                        childCount: comment.childCount,
+						voteCount = comment.voteCount
+						//, edited = commment.edited
+						
+                    }
 
-        //return array with parent comments. Check if user_id is in commentQuery, if so make sure to include how the user voted on each comment being sent back
+                    jsonObjects.push(commentObject);
+                })
+
+                return res.send(JSON.stringify(jsonObjects))
+            }
+        });
+
+        //return array with parent comments
+		//check if user_id is in commentQuery, if so make sure to include how the user voted on each comment being sent back
+		
         //the format you return should be relavant to the microservice and doesn't neceserily have to adhere to the API doc. It is upto the API end point to format it
         //in accordance with the API contract
     } else if (commentQuery.comment_level == 1) {
+		
+		mysqlHelper.sqlQuery("SELECT * FROM childComment WHERE parentID = ? AND userID = ?)", [commentQuery.comment_id, commentQuery.user_id], (err, rows) => {
+            if (err != null) {
+                return res.send("Error: " + err)
+            }
+            else {
+                var jsonObjects = []
 
+                rows.forEach(function (comment) {
+                    var commentObject = {
+						
+						//need to add all these stuff to childComment table
+						
+                        parentID: comment.commentID,
+						commentContent: comment.commentContent,
+                        userID: comment.userID,
+						postID: comment:videoID,
+                        timeStamp: comment.timeStamp,
+						voteCount = comment.voteCount
+						//, edited = commment.edited
+						
+                    }
 
-        //return array with parent comments. Check if user_id is in commentQuery, if so make sure to include how the user voted on each comment being sent back
+                    jsonObjects.push(commentObject);
+                })
+
+                return res.send(JSON.stringify(jsonObjects))
+            }
+        });
+
+        //return array with child comments. Check if user_id is in commentQuery, if so make sure to include how the user voted on each comment being sent back
         //the format you return should be relavant to the microservice and doesn't neceserily have to adhere to the API doc. It is upto the API end point to format it
         //in accordance with the API contract
     }

@@ -1,11 +1,13 @@
 //comment.js
 function comment(commentID, comment, userID, videoId, parentCommentID, timeStamp){
 	this.commentID = commentID;
-	this.comment = comment;
+	this.commentContent = commentContent;
 	this.userID = userID;
 	this.videoID = videoID;
-	this.parentCommentID = parentCommentID;
 	this.timeStamp = timeStamp;
+	this.childCount = childCount;
+	this.voteCount = voteCount;
+	//this.edited = edited;
 	
 }
 
