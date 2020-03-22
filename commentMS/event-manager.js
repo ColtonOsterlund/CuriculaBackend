@@ -30,6 +30,8 @@ function generateEvent(command, callback) {
         })
 }
 
+
+
 function createEvent(command) { //set appropriate actions for each event
     return new Promise((resolve, reject) => {
         console.log('command ' + command.type)
@@ -51,6 +53,8 @@ function createEvent(command) { //set appropriate actions for each event
     })
 }
 
+
+
 function createCommentEvent(command) {
 
     this.user_id = command.user_id
@@ -65,6 +69,8 @@ function createCommentEvent(command) {
         this.comment_id = command.parent_id
     }
 }
+
+
 
 function createVoteEvent(command) {
 
@@ -82,14 +88,14 @@ function storeEvent(event) {
         let args;
 
         if (event.type == 'create') {
-            query = 'INSERT INTO comment_event(event_id, comment_id, author_user_id, body, comment_level, time_posted, parent_comment_id, milliseconds_posted) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)'
-            args = [event.event_id, event.comment_id, event.user_id, event.body, event.comment_level, event.time_stamp.toISOString(), event.parent_id, event.time_stamp.getMilliseconds()]
+            query = 'INSERT INTO cms_event_comment(eventID, commentID, author_userID, author_username, body, comment_level, parentID, timestamp, milliseconds) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+            args = [event.event_id, event.comment_id, event.user_id, event.username, event.body, event.comment_level, event.parent_id, event.time_stamp.toISOString(), event.time_stamp.getMilliseconds()]
         } else if (event.type == 'edit') {
-            query = 'INSERT INTO comment_event(event_id, comment_id, author_user_id, body, comment_level, time_posted, parent_comment_id, milliseconds_posted) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?)'
-            args = [event.event_id, event.comment_id, event.user_id, event.body, event.comment_level, event.time_stamp.toISOString(), event.parent_id, event.time_stamp.getMilliseconds()]
+            query = 'INSERT INTO cms_event_comment(event_id, comment_id, author_userID, body, timestamp, milliseconds_posted) VALUES ( ?, ?, ?, ?, ?, ?)'
+            args = [event.event_id, event.comment_id, event.user_id, event.body, event.time_stamp.toISOString(), event.time_stamp.getMilliseconds()]
 
         } else if (event.type == 'vote') {
-            query = 'INSERT INTO vote_event(event_id, comment_id, author_user_id, vote, time_posted, milliseconds_posted) VALUES ( ?, ?, ?, ?, ?, ?)'
+            query = 'INSERT INTO cms_event_vote(eventID, commentID, author_userID, vote, timestamp, milliseconds) VALUES ( ?, ?, ?, ?, ?, ?)'
             args = [event.event_id, event.comment_id, event.user_id, event.vote, event.time_stamp.toISOString(), event.time_stamp.getMilliseconds()]
         }
 

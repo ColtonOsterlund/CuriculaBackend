@@ -1,10 +1,9 @@
 //file for all post routes
 
 const express = require('express')
-const mysqlHelper = require('./MySQLHelper.js')
 var bodyParser = require('body-parser')
 var authorization = require('./authorization.js')
-var commentMicroService = require('./commentMS/comment-microservice.js')
+const em = require('./commentMS/event-manager.js')
 
 
 const router = express.Router()
@@ -15,9 +14,10 @@ var jsonParser = bodyParser.json()
 
 router.post("/comment", jsonParser, authorization.authorizeUser, (req, res) => {
     console.log(req.body.comment_body)
-    commentMicroService.generateEvent({
+    em.generateEvent({
         type: req.body.mode,
         user_id: req.user._id,
+        username: req.body.username,
         body: req.body.comment_body,
         comment_level: req.body.comment_level,
         parent_id: req.body.target_id
@@ -32,7 +32,7 @@ router.post("/comment", jsonParser, authorization.authorizeUser, (req, res) => {
 })
 
 router.post("/vote", jsonParser, authorization.authorizeUser, (req, res) => {
-    commentMicroService.generateEvent({
+    em.generateEvent({
         type: 'vote',
         user_id: req.user._id,
         comment_id: req.body.comment_id,

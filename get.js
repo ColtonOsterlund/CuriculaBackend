@@ -4,6 +4,7 @@ const express = require('express')
 const mysqlHelper = require('./MySQLHelper.js')
 var bodyParser = require('body-parser')
 var authorization = require('./authorization.js')
+const rm = require('./commentMS/read-manager.js')
 var cors = require('cors')
 
 const router = express.Router()
@@ -518,7 +519,7 @@ router.get("/videos", jsonParser, (req, res) => {
 })
 
 
-router.get('/comment', jsonParser, (req, res, next) => {
+/*router.get('/comment', jsonParser, (req, res, next) => {
     if (req.header('auth-token')) {
         authorization.authorizeUser(req, res, next)
         console.log('authorized: ' + req.user._id)
@@ -625,6 +626,51 @@ router.get('/comment', jsonParser, (req, res, next) => {
         });
     }
 })
+*/
+
+router.get('/comments/parent', jsonParser, (req, res, next) => {
+    if (req.header('auth-token')) {
+        authorization.authorizeUser(req, res, next)
+        console.log('authorized: ' + req.user._id) //user._id is this a typo? or supposed to be like this
+    } else {
+        next()
+    }
+}, (req, res) => {
+
+    let comments = rm.readComments({   //comments will be an array of all the fetched comments
+        comment_level: 0,
+        comment_id: req.query.comment_id,
+        user_id: req.user._id       //this will be optional, it'll automatically disappear is user wasnt authenticated
+    }, (err) => {
+        
+    })
+
+     //format the output as specified in the API contract and send it back to the front end
+
+})
+
+router.get('/comments/child', jsonParser, (req, res, next) => {
+    if (req.header('auth-token')) {
+        authorization.authorizeUser(req, res, next)
+        console.log('authorized: ' + req.user._id)
+    } else {
+        next()
+    }
+}, (req, res) => {
+
+    let comments = rm.readComments({ //comments will be an array of all the fetched comments
+        comment_level: 1,
+        comment_id: req.query.comment_id,
+        user_id: req.user._id       //this will be optional, it'll automatically disappear is user wasnt authenticated
+    }, (err) => {
+
+    })
+
+
+    //format the output as specified in the API contract and send it back to the front end
+
+})
+
 
 
 module.exports = router //exports router out of this file 
