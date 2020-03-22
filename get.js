@@ -642,9 +642,11 @@ router.get('/comments/parent', jsonParser, (req, res, next) => {
         comment_id: req.query.comment_id,
         user_id: req.user._id       //this will be optional, it'll automatically disappear is user wasnt authenticated
     }, (err) => {
-        
+        console.error('Microservice error: ' + err)
     })
 
+    console.log('sending: ' + JSON.stringify(comments))
+    res.status(501).send('working on it')
      //format the output as specified in the API contract and send it back to the front end
 
 })
@@ -664,9 +666,11 @@ router.get('/comments/child', jsonParser, (req, res, next) => {
         user_id: req.user._id       //this will be optional, it'll automatically disappear is user wasnt authenticated
     }, (err) => {
 
+        console.error('Microservice error: ' + err)
     })
 
-
+    console.log('sending: ' + JSON.stringify(comments))
+    res.status(501).send('working on it')
     //format the output as specified in the API contract and send it back to the front end
 
 })

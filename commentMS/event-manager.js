@@ -91,7 +91,7 @@ function storeEvent(event) {
             query = 'INSERT INTO cms_event_comment(eventID, commentID, author_userID, author_username, body, comment_level, parentID, timestamp, milliseconds) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)'
             args = [event.event_id, event.comment_id, event.user_id, event.username, event.body, event.comment_level, event.parent_id, event.time_stamp.toISOString(), event.time_stamp.getMilliseconds()]
         } else if (event.type == 'edit') {
-            query = 'INSERT INTO cms_event_comment(event_id, comment_id, author_userID, body, timestamp, milliseconds_posted) VALUES ( ?, ?, ?, ?, ?, ?)'
+            query = 'INSERT INTO cms_event_comment(eventID, commentID, author_userID, body, timestamp, milliseconds_posted) VALUES ( ?, ?, ?, ?, ?, ?)'
             args = [event.event_id, event.comment_id, event.user_id, event.body, event.time_stamp.toISOString(), event.time_stamp.getMilliseconds()]
 
         } else if (event.type == 'vote') {
