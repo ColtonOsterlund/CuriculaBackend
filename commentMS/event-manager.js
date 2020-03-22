@@ -34,7 +34,6 @@ function generateEvent(command, callback) {
 
 function createEvent(command) { //set appropriate actions for each event
     return new Promise((resolve, reject) => {
-        console.log('command ' + command.type)
         let event = new Event(command.type)
         if (command.type === 'create') {
             event.populateEvent = createCommentEvent
@@ -65,6 +64,7 @@ function createCommentEvent(command) {
         this.comment_id = uuid.v4()
         this.comment_level = command.comment_level
         this.parent_id = command.parent_id
+        this.username = command.username
     } else if (command.type == 'edit') {
         this.comment_id = command.parent_id
     }

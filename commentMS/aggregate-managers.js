@@ -9,22 +9,22 @@ class Aggregate {
 
 const aggregateList = [
     new Aggregate(aggregates.parentCommentAggregate, (event) => {
-        if (event.type == 'comment' && event.comment_level == 0) {
+        if (event.type == 'create') {
             return true
-        } else if (event.type = 'update') {
+        } else if (event.type == 'edit') {
             return true
-        } else if (event.type = 'vote') {
+        } else if (event.type == 'vote') {
             return true
         } else {
             return false
         }
     }),
     new Aggregate(aggregates.childCommentAggregate, (event) => {
-        if (event.type == 'comment' && event.comment_level == 1) {
+        if (event.type == 'create' && event.comment_level == 1) {
             return true
-        } else if (event.type = 'update') {
+        } else if (event.type == 'edit') {
             return true
-        } else if (event.type = 'vote') {
+        } else if (event.type == 'vote') {
             return true
         } else {
             return false
@@ -41,7 +41,6 @@ const aggregateList = [
 
 
 function updateAggregates(event) {
-    console.log('event type: ' + event.type)
     aggregateList.forEach((item) => {
         if (item.subscriptionCheck(event)) {
             item.updateAggregate(event)
