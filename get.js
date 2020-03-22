@@ -635,6 +635,7 @@ router.get('/comments/parent', jsonParser, (req, res, next) => {
             next()
         })
     } else {
+        req.user = {_id: undefined} //not the best work around but makes the code more readable
         next()
     }
 }, (req, res) => {
@@ -660,6 +661,7 @@ router.get('/comments/child', jsonParser, (req, res, next) => {
             next()
         })
     } else {
+        req.user = {_id: undefined} //not the best work around but makes the code more readable
         next()
     }
 }, (req, res) => {
