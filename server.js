@@ -19,7 +19,8 @@ server.use(getRouter)
 server.use(postRouter)
 server.use(postRouter)
 server.use(authenticationRouter.router)
-server.use(cors({origin: 'http://localhost:4200'})) //THIS IS SUPPOSED TO SOLVE CORS ISSUE BUT IS NOT WORKING - LOOK MORE INTO THIS
+server.use(cors()) //THIS IS SUPPOSED TO SOLVE CORS ISSUE BUT IS NOT WORKING - LOOK MORE INTO THIS
+server.options('*', cors()) //cors preflight
 
 
 function mySQLConnectionTest(){
