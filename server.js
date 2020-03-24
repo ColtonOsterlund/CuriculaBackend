@@ -22,7 +22,7 @@ server.use(authenticationRouter.router)
 //server.use(cors()) //THIS IS SUPPOSED TO SOLVE CORS ISSUE BUT IS NOT WORKING - LOOK MORE INTO THIS
 //server.options('*', cors()) //cors preflight
 server.use(function(req, res, next) {
-	res.header("Access-Control-Allow-Origin", "http://localhost:4200");
+	res.header("Access-Control-Allow-Origin", "http://localhost:4200/schools");
 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 	next();
   });
