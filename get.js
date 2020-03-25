@@ -638,6 +638,7 @@ router.get('/comments/parent', jsonParser, (req, res, next) => {
             next()
         })
     } else {
+        console.log('no auth-token found')
         req.user = { _id: undefined } //not the best work around but makes the code more readable
         next()
     }
@@ -667,6 +668,7 @@ router.get('/comments/child', jsonParser, (req, res, next) => {
             next()
         })
     } else {
+        console.log('no auth-token found')
         req.user = { _id: undefined } //not the best work around but makes the code more readable
         next()
     }

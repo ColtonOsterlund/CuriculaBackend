@@ -11,7 +11,7 @@ exports.readComments = function(commentQuery, callback) {
             "FROM cms_aggregate_parentcomment C " +
             "LEFT JOIN cms_aggregate_vote V " +
             "    ON C.commentID = V.commentID " +
-            "    AND V.author_userID = ? " +
+            "    AND V.userID = ? " +
             "    AND parent_videoID = ?"
             args = [commentQuery.user_id, commentQuery.comment_id]
         } else if (commentQuery.comment_level == 1) {
@@ -19,7 +19,7 @@ exports.readComments = function(commentQuery, callback) {
             "FROM cms_aggregate_childcomment C " +
             "LEFT JOIN cms_aggregate_vote V " +
             "    ON C.commentID = V.commentID " +
-            "    AND V.author_userID = ? " +
+            "    AND V.userID = ? " +
             "    AND parent_commentID = ?"
             args = [commentQuery.user_id, commentQuery.comment_id]
         } else {
