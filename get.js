@@ -676,13 +676,14 @@ router.get('/comments/child', jsonParser, (req, res, next) => {
         comment_level: 1,
         comment_id: req.query.commentID,
         user_id: req.user._id       //this will be optional, it'll automatically disappear is user wasnt authenticated
-    }, (err) => {
-
-        console.error('Microservice error: ' + err)
+    }, (err, comments) => {
+        if (err) {
+            console.error('Microservice error: ' + err)
+            res.status(500).send(new Error('Server Error: ' + error))
+        } else {
+            res.status(201).send(comments)
+        }
     })
-
-    console.log('sending: ' + JSON.stringify(comments))
-    res.status(501).send('working on it')
     //format the output as specified in the API contract and send it back to the front end
 
 })

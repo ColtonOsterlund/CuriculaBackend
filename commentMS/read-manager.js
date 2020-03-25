@@ -6,16 +6,22 @@ exports.readComments = function(commentQuery, callback) {
     let args
 
     if (commentQuery.user_id) {
-        query = "SELECT C.commentID, author_userID, author_username, body, timestamp, vote_count ?, is_edited, IFNULL(vote, 0) AS vote " + 
-            "FROM ? C " +
+        if (commentQuery.comment_level == 0) {
+            query = "SELECT C.commentID, author_userID, author_username, body, timestamp, vote_count, child_count, is_edited, IFNULL(vote, 0) AS vote " + 
+            "FROM cms_aggregate_parentcomment C " +
             "LEFT JOIN cms_aggregate_vote V " +
             "    ON C.commentID = V.commentID " +
-            "    AND C.author_userID = ? " +
-            "    AND ? = ?"
-        if (commentQuery.comment_level == 0) {
-            args = [', child_count', 'cms_aggregate_parentcomment', commentQuery.user_id, 'parent_videoID', commentQuery.comment_id]
+            "    AND V.author_userID = ? " +
+            "    AND parent_videoID = ?"
+            args = [commentQuery.user_id, commentQuery.comment_id]
         } else if (commentQuery.comment_level == 1) {
-            args = ['', 'cms_aggregate_childcomment', commentQuery.user_id, 'parent_commentID', commentQuery.comment_id]
+            query = "SELECT C.commentID, author_userID, author_username, body, timestamp, vote_count, is_edited, IFNULL(vote, 0) AS vote " + 
+            "FROM cms_aggregate_childcomment C " +
+            "LEFT JOIN cms_aggregate_vote V " +
+            "    ON C.commentID = V.commentID " +
+            "    AND V.author_userID = ? " +
+            "    AND parent_commentID = ?"
+            args = [commentQuery.user_id, commentQuery.comment_id]
         } else {
             console.err(new Error("invalid comment_level in commentQuery: " + JSON.stringify(commentQuery)))
         }
@@ -57,8 +63,4 @@ exports.readComments = function(commentQuery, callback) {
             callback(null, commentArray)
         }
     });
-
-    //return array with child comments. Check if user_id is in commentQuery, if so make sure to include how the user voted on each comment being sent back
-    //the format you return should be relavant to the microservice and doesn't neceserily have to adhere to the API doc. It is upto the API end point to format it
-    //in accordance with the API contract
 }

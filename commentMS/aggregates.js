@@ -9,8 +9,8 @@ exports.parentCommentAggregate = function (event) {
         args = [event.comment_id]
         query = 'UPDATE cms_aggregate_parentcomment SET child_count = child_count + 1 WHERE commentID = ?'
     } if (event.type == 'create') {
-        args = [event.comment_id, event.user_id, event.username, event.body, event.time_stamp.toISOString()]
-        query = 'INSERT INTO cms_aggregate_parentcomment (commentID, author_userID, author_username, body, timestamp) VALUES (?, ?, ?, ?, ?) '
+        args = [event.comment_id, event.user_id, event.username, event.parentID, event.body, event.time_stamp.toISOString()]
+        query = 'INSERT INTO cms_aggregate_parentcomment (commentID, author_userID, author_username, parent_videoID body, timestamp) VALUES (?, ?, ?, ?, ?, ?) '
     } else if (event.type == 'edit') {
         args = [event.body, true, event.comment_id]
         query = 'UPDATE cms_aggregate_parentcomment SET body = ?, is_edited = ? WHERE commentID = ?'
@@ -30,9 +30,12 @@ exports.parentCommentAggregate = function (event) {
 
 exports.childCommentAggregate = function (event) {
 
+    let args
+    let query 
+
     if (event.type == 'create') {
-        ///comment_id, user_id, username, comment body, initial vote value, timpe posted, edited?
         args = [event.comment_id, event.user_id, event.username, event.body, 0, event.time_stamp.toISOString(), false]
+        query = 'INSERT INTO cms_aggregate_childcomment (commentID, author_userID, author_username, body, timestamp)'
     } else if (event.type == 'edit') {
 
         //comment_id, body, edited?
