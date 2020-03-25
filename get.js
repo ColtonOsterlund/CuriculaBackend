@@ -638,22 +638,25 @@ router.get('/comments/parent', jsonParser, (req, res, next) => {
             next()
         })
     } else {
-        req.user = {_id: undefined} //not the best work around but makes the code more readable
+        req.user = { _id: undefined } //not the best work around but makes the code more readable
         next()
     }
 }, (req, res) => {
 
-    let comments = rm.readComments({   //comments will be an array of all the fetched comments
+    rm.readComments({   //comments will be an array of all the fetched comments
         comment_level: 0,
         comment_id: req.query.videoID,
         user_id: req.user._id       //this will be optional, it'll automatically disappear is user wasnt authenticated
-    }, (err) => {
-        console.error('Microservice error: ' + err)
+    }, (err, comments) => {
+        if (err) {
+            console.error('Microservice error: ' + err)
+            res.status(500).send('server failure')
+        } else {
+            res.status(201).send(comments)
+        }
     })
-
-    console.log('sending: ' + JSON.stringify(comments))
-    res.status(501).send('working on it')
-     //format the output as specified in the API contract and send it back to the front end
+    // res.status(501).send('working on it')
+    //format the output as specified in the API contract and send it back to the front end
 
 })
 
@@ -664,7 +667,7 @@ router.get('/comments/child', jsonParser, (req, res, next) => {
             next()
         })
     } else {
-        req.user = {_id: undefined} //not the best work around but makes the code more readable
+        req.user = { _id: undefined } //not the best work around but makes the code more readable
         next()
     }
 }, (req, res) => {
