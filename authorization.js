@@ -8,8 +8,12 @@ dotenv.config() //CONFIGURE ENVIRONMENT VARIABLES
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const uuid = require('uuid')
+var cors = require('cors')
 
 const router = express.Router()
+
+router.use(cors()) //THIS IS SUPPOSED TO SOLVE CORS ISSUE BUT IS NOT WORKING - LOOK MORE INTO THIS
+router.options('*', cors()) //cors preflight
 
 // create application/json parser
 var jsonParser = bodyParser.json()
