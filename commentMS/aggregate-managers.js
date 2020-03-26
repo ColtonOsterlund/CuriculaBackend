@@ -20,7 +20,6 @@ const aggregateList = [
         }
     }),
     new Aggregate(aggregates.childCommentAggregate, (event) => {
-        console.log('checking child aggr: ' + JSON.stringify(event))
         if (event.type == 'create' && event.comment_level == 1) {
             return true
         } else if (event.type == 'edit' && event.level == 1) {

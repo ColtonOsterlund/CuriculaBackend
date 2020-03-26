@@ -524,8 +524,7 @@ router.get("/videos", jsonParser, (req, res) => {
 router.get('/comments/parent', jsonParser, (req, res, next) => {
     if (req.header('auth-token')) {
         authorization.authorizeUser(req, res, () => {
-            console.log('authorized: ' + req.user._id) //user._id is this a typo? or supposed to be like this
-            next()
+            console.log('authorized: ' + req.user._id) 
         })
     } else {
         console.log('no auth-token found')
@@ -534,27 +533,23 @@ router.get('/comments/parent', jsonParser, (req, res, next) => {
     }
 }, (req, res) => {
 
-    rm.readComments({   //comments will be an array of all the fetched comments
+    rm.readComments({   
         comment_level: 0,
         comment_id: req.query.videoID,
         user_id: req.user._id       //this will be optional, it'll automatically disappear is user wasnt authenticated
     }, (err, comments) => {
         if (err) {
-            console.error('Microservice error: ' + err)
-            res.status(500).send('server failure')
+            res.status(500).send('server failure: ' + err)
         } else {
             res.status(201).send(comments)
         }
     })
-    // res.status(501).send('working on it')
-    //format the output as specified in the API contract and send it back to the front end
-
 })
 
 router.get('/comments/child', jsonParser, (req, res, next) => {
     if (req.header('auth-token')) {
         authorization.authorizeUser(req, res, () => {
-            console.log('authorized: ' + req.user._id) //user._id is this a typo? or supposed to be like this
+            console.log('authorized: ' + req.user._id) 
             next()
         })
     } else {
@@ -564,7 +559,7 @@ router.get('/comments/child', jsonParser, (req, res, next) => {
     }
 }, (req, res) => {
 
-    rm.readComments({ //comments will be an array of all the fetched comments
+    rm.readComments({
         comment_level: 1,
         comment_id: req.query.commentID,
         user_id: req.user._id       //this will be optional, it'll automatically disappear is user wasnt authenticated
@@ -576,10 +571,7 @@ router.get('/comments/child', jsonParser, (req, res, next) => {
             res.status(201).send(comments)
         }
     })
-    //format the output as specified in the API contract and send it back to the front end
 
 })
-
-
 
 module.exports = router //exports router out of this file 

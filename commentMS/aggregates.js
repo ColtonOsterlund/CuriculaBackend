@@ -9,7 +9,7 @@ exports.parentCommentAggregate = function (event) {
         args = [event.parent_id]
         query = 'UPDATE cms_aggregate_parentcomment SET child_count = child_count + 1 WHERE commentID = ?'
     } else if (event.type == 'create') {
-        args = [event.comment_id, event.user_id, event.username, event.parentID, event.body, event.time_stamp.toISOString()]
+        args = [event.comment_id, event.user_id, event.username, event.parent_id, event.body, event.time_stamp.toISOString()]
         query = 'INSERT INTO cms_aggregate_parentcomment (commentID, author_userID, author_username, parent_videoID, body, timestamp) VALUES (?, ?, ?, ?, ?, ?) '
     } else if (event.type == 'edit') {
         args = [event.body, true, event.comment_id]

@@ -41,7 +41,6 @@ exports.readComments = function(commentQuery, callback) {
     console.log(args)
     mysqlHelper.sqlQuery(query, args, (err, rows) => {
         if (err != null) {
-            console.log("SQL query: " + query)
             console.log(args)
             callback(err)
         } else {

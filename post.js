@@ -16,7 +16,6 @@ var jsonParser = bodyParser.json()
 
 
 router.post("/comments", jsonParser, authorization.authorizeUser, (req, res) => {
-    console.log(req.body.comment_body)
     em.generateEvent({
         type: req.body.mode,
         user_id: req.user._id,

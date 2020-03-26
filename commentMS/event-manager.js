@@ -7,7 +7,6 @@ class Event {
         this.time_stamp = new Date()
         this.event_id = uuid.v4()
         this.type = eventType
-        console.log('type: ' + this.type)
     }
 }
 
@@ -21,7 +20,6 @@ function generateEvent(command, callback) {
             return storeEvent(event)
         })
         .then((event) => {
-            console.log('update aggregates')
             am.updateAggregates(event)
         })
         .then(callback())
@@ -59,7 +57,6 @@ function createCommentEvent(command) {
     this.body = command.body
 
     if (command.type == 'create') {
-        console.log('in create option')
         this.comment_id = uuid.v4()
         this.comment_level = command.comment_level
         this.parent_id = command.parent_id
