@@ -36,7 +36,7 @@ router.post("/comments", jsonParser, authorization.authorizeUser, (req, res) => 
 
 router.post("/vote", jsonParser, authorization.authorizeUser, (req, res) => {
     em.generateEvent({
-        type: 'vote',
+        type: "vote",
         user_id: req.user._id,
         comment_id: req.body.comment_id,
         vote: req.body.vote

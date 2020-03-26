@@ -7,6 +7,7 @@ class Event {
         this.time_stamp = new Date()
         this.event_id = uuid.v4()
         this.type = eventType
+        console.log('type: ' + this.type)
     }
 }
 
@@ -35,13 +36,13 @@ function generateEvent(command, callback) {
 function createEvent(command) { //set appropriate actions for each event
     return new Promise((resolve, reject) => {
         let event = new Event(command.type)
-        if (command.type === 'create') {
+        if (command.type == 'create') {
             event.populateEvent = createCommentEvent
             //add handlers
-        } else if (command.type === 'edit') {
+        } else if (command.type == 'edit') {
             event.populateEvent = createCommentEvent
             //add handlers
-        } else if (command.type === 'vote') {
+        } else if (command.type == 'vote') {
             event.populateEvent = createVoteEvent
             //add handlers
         } else {
@@ -51,8 +52,6 @@ function createEvent(command) { //set appropriate actions for each event
         resolve(event)
     })
 }
-
-
 
 function createCommentEvent(command) {
 
@@ -70,16 +69,12 @@ function createCommentEvent(command) {
     }
 }
 
-
-
 function createVoteEvent(command) {
 
     this.vote = command.vote
     this.user_id = command.user_id
     this.comment_id = command.comment_id
 }
-
-
 
 function storeEvent(event) {
 
