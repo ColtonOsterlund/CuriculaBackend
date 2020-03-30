@@ -78,19 +78,10 @@ router.post('/user/register', jsonParser, (req, res) => {
 	bcrypt.hash(req.body.password, 10, function (err, hash) {
 		if (err) {
 			console.log("error while hashing password: " + err)
-			return res.status(500).json([{error: err}])
+			return res.json([{error: err}])
 		}
 
-<<<<<<< HEAD
-	mysqlHelper.sqlQuery("SELECT * FROM user WHERE username = ? OR email = ?", [username, email], (err, objects) => {
-
-		if (err) {
-			res.status(500).json([{message: "Server Error"}])
-			return
-		}
-=======
 		else{
->>>>>>> 6c0fcdc6a2e262d01c51da88d4a6a7f56346eb87
 
 			var userID = uuid.v4();
 
@@ -100,14 +91,6 @@ router.post('/user/register', jsonParser, (req, res) => {
 					res.json([{message: "Server Error"}])
 					return
 				}
-<<<<<<< HEAD
-				else{
-									
-                    mysqlHelper.sqlQuery("INSERT INTO schoolRelUser(userID, schoolID) VALUES (?, ?)", [userID, schoolID], (err, objects) =>{
-                        if(err){
-                            res.status(500).json([{message: "Server Error: " + err}])
-                            return
-=======
 
 				if (objects[0] != undefined) {
 					res.json([{message: "Username or Email has Already Been Used"}])
@@ -133,19 +116,18 @@ router.post('/user/register', jsonParser, (req, res) => {
 						if (err) {
 							res.status(501).json([{message: "Server Database Query Error"}])
 							return
->>>>>>> 6c0fcdc6a2e262d01c51da88d4a6a7f56346eb87
 						}
 						else{
 											
 							mysqlHelper.sqlQuery("INSERT INTO schoolRelUser(userID, schoolID) VALUES (?, ?)", [userID, schoolID], (err, objects) =>{
 								if(err){
-									res.status(500).json([{message: "Server Error: " + err}])
+									res.json([{message: "Server Error: " + err}])
 									return
 								}
 								else{
 									mysqlHelper.sqlQuery("INSERT INTO userRelMajor(userID, majProgramID) VALUES (?, ?)", [userID, majorProgramID], (err, objects) =>{
 										if(err){
-											res.status(500).json([{message: "Server Error: " + err}])
+											res.json([{message: "Server Error: " + err}])
 											return
 										}
 										else{
@@ -198,7 +180,7 @@ router.post('/user/login', jsonParser, (req, res) => {
 		if (err != null) {
 			//console.log("got here 1")
 			console.log("ERROR : " + err)
-			return res.status(500).json([{message: "Server Error"}])
+			return res.json([{message: "Server Error"}])
 		}
 
 		if (objects[0] == undefined) { //email did not match - user not in database
@@ -210,13 +192,11 @@ router.post('/user/login', jsonParser, (req, res) => {
 			return res.json([{message: "Email or Password is Incorrect"}]);
 		}
 
-		console.log(objects[0].password)
-
 
 		bcrypt.compare(password, objects[0].password, function (err, result) { //compares password sent with hashed password in database
 			
 			if (err) {
-				return res.status(500).json([{message: "error comparing password with stored hashed password: " + err}])
+				return res.json([{message: "error comparing password with stored hashed password: " + err}])
 			}
 			else if (result == true) {
 				//passwords match
@@ -229,6 +209,7 @@ router.post('/user/login', jsonParser, (req, res) => {
 
 				var loginObject = {
 					userUUID: objects[0].userID,
+					userName: objects[0].userName,
 					jwt: token
 				}
 
@@ -257,7 +238,7 @@ router.post('/user/logout', jsonParser, authorizeUser, (req, res) => {
 
 	mysqlHelper.sqlQuery("INSERT INTO blacklistedjwts (jwt, deleteNext) VALUES (?, ?)", [token, "0"], (err, rows) => {
 		if (err != null) {
-			return res.status(500).json([{message: + "Error inserting into blacklisted jwts:   " + err}])
+			return res.json([{message: err}])
 		}
 		else {
 			return res.json([{message: "Success"}])
@@ -272,7 +253,7 @@ router.get('/user/user-profile', jsonParser, authorizeUser, (req, res) => {
 
 	mysqlHelper.sqlQuery("SELECT * FROM user AS U WHERE U.userID = ?", [userID], (err, objects) => {
 		if (err != null) {
-			return res.status(500).json([{message: err}])
+			return res.json([{message: err}])
 		}
 		else {
 			var jsonObjects = []
