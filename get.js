@@ -31,7 +31,7 @@ router.get("/courses", jsonParser, (req, res) => {
     var courseID = req.query.courseID;
 
     if (schoolID == undefined && programID == undefined && courseID == undefined) { //NO QUERY PARAMETERS
-        mysqlHelper.sqlQuery("SELECT * FROM course, schoolRelCourse WHERE schoolRelCourse.courseID = course.courseID", null, (err, rows) => {
+        mysqlHelper.sqlQuery("SELECT * FROM course, schoolRelCourse, programRelCourse WHERE schoolRelCourse.courseID = course.courseID AND programRelCourse.courseID = course.courseID", null, (err, rows) => {
             if (err != null) {
                 return res.send("Error: " + err)
             }
@@ -43,7 +43,8 @@ router.get("/courses", jsonParser, (req, res) => {
                         courseName: course.courseName,
                         courseID: course.courseID,
                         level: course.level,
-                        schoolID: course.schoolID
+                        schoolID: course.schoolID,
+                        programID: course.programID
                     }
 
                     jsonObjects.push(course);
