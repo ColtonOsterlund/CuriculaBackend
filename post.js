@@ -15,8 +15,7 @@ router.options('*', cors()) //cors preflight
 var jsonParser = bodyParser.json()
 
 
-router.post("/comment", jsonParser, authorization.authorizeUser, (req, res) => {
-    console.log(req.body.comment_body)
+router.post("/comments", jsonParser, authorization.authorizeUser, (req, res) => {
     em.generateEvent({
         type: req.body.mode,
         user_id: req.user._id,
@@ -36,7 +35,7 @@ router.post("/comment", jsonParser, authorization.authorizeUser, (req, res) => {
 
 router.post("/vote", jsonParser, authorization.authorizeUser, (req, res) => {
     em.generateEvent({
-        type: 'vote',
+        type: "vote",
         user_id: req.user._id,
         comment_id: req.body.comment_id,
         vote: req.body.vote

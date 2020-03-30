@@ -20,7 +20,6 @@ function generateEvent(command, callback) {
             return storeEvent(event)
         })
         .then((event) => {
-            console.log('update aggregates')
             am.updateAggregates(event)
         })
         .then(callback())
@@ -34,15 +33,14 @@ function generateEvent(command, callback) {
 
 function createEvent(command) { //set appropriate actions for each event
     return new Promise((resolve, reject) => {
-        console.log('command ' + command.type)
         let event = new Event(command.type)
-        if (command.type === 'create') {
+        if (command.type == 'create') {
             event.populateEvent = createCommentEvent
             //add handlers
-        } else if (command.type === 'edit') {
+        } else if (command.type == 'edit') {
             event.populateEvent = createCommentEvent
             //add handlers
-        } else if (command.type === 'vote') {
+        } else if (command.type == 'vote') {
             event.populateEvent = createVoteEvent
             //add handlers
         } else {
@@ -53,24 +51,20 @@ function createEvent(command) { //set appropriate actions for each event
     })
 }
 
-
-
 function createCommentEvent(command) {
 
     this.user_id = command.user_id
     this.body = command.body
 
     if (command.type == 'create') {
-        console.log('in create option')
         this.comment_id = uuid.v4()
         this.comment_level = command.comment_level
         this.parent_id = command.parent_id
+        this.username = command.username
     } else if (command.type == 'edit') {
         this.comment_id = command.parent_id
     }
 }
-
-
 
 function createVoteEvent(command) {
 
@@ -78,8 +72,6 @@ function createVoteEvent(command) {
     this.user_id = command.user_id
     this.comment_id = command.comment_id
 }
-
-
 
 function storeEvent(event) {
 
