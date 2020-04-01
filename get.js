@@ -347,6 +347,39 @@ router.get("/programs", jsonParser, (req, res) => {
 
 
 
+
+router.get("/faculty", jsonParser, (req, res) => {
+
+    if (schoolID == undefined && programID == undefined) {
+        mysqlHelper.sqlQuery("SELECT * FROM faculty", null, (err, rows) => {
+            if (err != null) {
+                return res.send("Error: " + err)
+            }
+            else {
+                var jsonObjects = []
+
+                rows.forEach(function (faculty) {
+                    var courseObject = {
+                        facultyName: faculty.facultyName,
+                        facultyID: faculty.facultyID
+                    }
+
+                    jsonObjects.push(faculty);
+                })
+
+                return res.send(JSON.stringify(jsonObjects))
+            }
+        });
+    }
+
+})
+
+
+
+
+
+
+
 router.get("/videos", jsonParser, (req, res) => {
 
     var courseID = req.query.courseID;

@@ -88,7 +88,7 @@ FOREIGN KEY(majProgramID) REFERENCES program(programID)
 CREATE TABLE IF NOT EXISTS userRelMinor(
 userID VARCHAR(128),
 minProgramID VARCHAR(128),
-PRIMARY KEY(userID, programID),
+PRIMARY KEY(userID, minProgramID),
 FOREIGN KEY(userID) REFERENCES user(userID),
 FOREIGN KEY(minProgramID) REFERENCES program(programID)
 );
@@ -107,6 +107,12 @@ courseID varchar(128),
 PRIMARY KEY(schoolID, courseID),
 FOREIGN KEY(schoolID) REFERENCES school(schoolID),
 FOREIGN KEY(courseID) REFERENCES course(courseID) 
+);
+
+CREATE TABLE IF NOT EXISTS faculty(
+facultyID varchar(1),
+facultyName varchar(100),
+PRIMARY KEY(facultyID, facultyName)
 );
 
 CREATE TABLE IF NOT EXISTS blacklistedjwts(
