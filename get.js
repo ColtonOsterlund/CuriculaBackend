@@ -350,7 +350,6 @@ router.get("/programs", jsonParser, (req, res) => {
 
 router.get("/faculty", jsonParser, (req, res) => {
 
-    if (schoolID == undefined && programID == undefined) {
         mysqlHelper.sqlQuery("SELECT * FROM faculty", null, (err, rows) => {
             if (err != null) {
                 return res.send("Error: " + err)
@@ -370,8 +369,7 @@ router.get("/faculty", jsonParser, (req, res) => {
                 return res.send(JSON.stringify(jsonObjects))
             }
         });
-    }
-
+        
 })
 
 
