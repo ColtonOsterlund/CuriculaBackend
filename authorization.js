@@ -249,21 +249,24 @@ router.post('/user/logout', jsonParser, authorizeUser, (req, res) => {
 
 router.get('/user/user-profile', jsonParser, authorizeUser, (req, res) => {
 
-	var userID = req.header("user-id")
+	let userID = req.user._id
 
-	mysqlHelper.sqlQuery("SELECT * FROM user AS U WHERE U.userID = ?", [userID], (err, objects) => {
+	mysqlHelper.sqlQuery("SELECT * FROM user_profile WHERE userID = ?", [userID], (err, objects) => {
 		if (err != null) {
 			return res.json([{message: err}])
 		}
 		else {
-			var jsonObjects = []
-
-			var userObject = {
+			let jsonObjects = []
+			console.log(objects[0])
+			let userObject = {
 				userUUID: objects[0].userID,
 				userName: objects[0].userName,
 				firstName: objects[0].firstName,
 				lastName: objects[0].lastName,
-				email: objects[0].email
+				email: objects[0].email,
+				school: objects[0].schoolName,
+				major: objects[0].major,
+				minor: objects[0].minor
 			}
 
 			jsonObjects.push(userObject);
