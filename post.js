@@ -4,6 +4,7 @@ const express = require('express')
 var bodyParser = require('body-parser')
 var authorization = require('./authorization.js')
 const em = require('./comment-microservice/').eventmanager
+const uuid = require('uuid')
 var cors = require('cors')
 
 const router = express.Router()
