@@ -1,6 +1,6 @@
-const mysqlHelper = require('../MySQLHelper.js')
-
 //one table per aggregate
+const sqlQuery = require("../MySQLHelper").sqlQuery;
+
 exports.parentCommentAggregate = function (event) {
     let args
     let query
@@ -19,13 +19,9 @@ exports.parentCommentAggregate = function (event) {
         query = 'UPDATE cms_aggregate_parentcomment SET vote_count = vote_count + ? WHERE commentID = ?'
     }
 
-    console.log('updating parent aggregate')
-
-    mysqlHelper.sqlQuery(query, args, (err, result) => {
+    sqlQuery(query, args, (err) => {
         if (err) {
             console.error(err)
-        } else {
-            console.log(result)
         }
     })
 }
@@ -46,12 +42,9 @@ exports.childCommentAggregate = function (event) {
         query = 'UPDATE cms_aggregate_childcomment SET vote_count = vote_count + ? WHERE commentID = ?'
     }
 
-    console.log('updating child aggregate')
-    mysqlHelper.sqlQuery(query, args, (err, result) => {
+    sqlQuery(query, args, (err) => {
         if (err) {
             console.error(err)
-        } else {
-            console.log(result)
         }
     })
 }
@@ -64,14 +57,10 @@ exports.voteAggregate = function (event) {
             '   UPDATE ' +
             '   vote = ?'
 
-    console.log('updating vote aggregate')
 
-
-    mysqlHelper.sqlQuery(query, args, (err, result) => {
+    sqlQuery(query, args, (err) => {
         if (err) {
             console.error(err)
-        } else {
-            console.log(result)
         }
     })
 }

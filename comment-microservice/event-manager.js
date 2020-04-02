@@ -1,6 +1,6 @@
+const sqlQuery = require("../MySQLHelper").sqlQuery;
 const uuid = require('uuid')
-const mysqlHelper = require('../MySQLHelper.js')
-const am = require('./aggregate-managers.js')
+const am = require('./aggregate-managers')
 
 class Event {
     constructor(eventType) {
@@ -12,11 +12,9 @@ class Event {
 
 //each event will be created from command, populated, stored in event store, and finally sent to read store
 function generateEvent(command, callback) {
-    //console.log('command accepted: ' + JSON.stringify(command))
     createEvent(command)
         .then((event) => {
             event.populateEvent(command)
-            //console.log('populated event: ' + JSON.stringify(event))
             return storeEvent(event)
         })
         .then((event) => {
@@ -91,7 +89,7 @@ function storeEvent(event) {
             args = [event.event_id, event.comment_id, event.user_id, event.vote, event.time_stamp.toISOString(), event.time_stamp.getMilliseconds()]
         }
 
-        mysqlHelper.sqlQuery(query, args, (error) => {
+        sqlQuery(query, args, (error) => {
             if (!error) {
                 resolve(event)
             } else {

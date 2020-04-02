@@ -4,7 +4,7 @@ const express = require('express')
 const mysqlHelper = require('./MySQLHelper.js')
 var bodyParser = require('body-parser')
 var authorization = require('./authorization.js')
-const rm = require('./commentMS/read-manager.js')
+const rm = require('./comment-microservice/').readmanager
 var cors = require('cors')
 
 const router = express.Router()
@@ -350,26 +350,26 @@ router.get("/programs", jsonParser, (req, res) => {
 
 router.get("/faculty", jsonParser, (req, res) => {
 
-        mysqlHelper.sqlQuery("SELECT * FROM faculty", null, (err, rows) => {
-            if (err != null) {
-                return res.send("Error: " + err)
-            }
-            else {
-                var jsonObjects = []
+    mysqlHelper.sqlQuery("SELECT * FROM faculty", null, (err, rows) => {
+        if (err != null) {
+            return res.send("Error: " + err)
+        }
+        else {
+            var jsonObjects = []
 
-                rows.forEach(function (faculty) {
-                    var courseObject = {
-                        facultyName: faculty.facultyName,
-                        facultyID: faculty.facultyID
-                    }
+            rows.forEach(function (faculty) {
+                var courseObject = {
+                    facultyName: faculty.facultyName,
+                    facultyID: faculty.facultyID
+                }
 
-                    jsonObjects.push(faculty);
-                })
+                jsonObjects.push(faculty);
+            })
 
-                return res.send(JSON.stringify(jsonObjects))
-            }
-        });
-        
+            return res.send(JSON.stringify(jsonObjects))
+        }
+    });
+
 })
 
 
@@ -556,16 +556,15 @@ router.get("/videos", jsonParser, (req, res) => {
 router.get('/comments/parent', jsonParser, (req, res, next) => {
     if (req.header('auth-token')) {
         authorization.authorizeUser(req, res, () => {
-            console.log('authorized: ' + req.user._id) 
+            next()
         })
     } else {
-        console.log('no auth-token found')
         req.user = { _id: undefined } //not the best work around but makes the code more readable
         next()
     }
 }, (req, res) => {
 
-    rm.readComments({   
+    rm.readComments({
         comment_level: 0,
         comment_id: req.query.videoID,
         user_id: req.user._id       //this will be optional, it'll automatically disappear is user wasnt authenticated
@@ -581,11 +580,9 @@ router.get('/comments/parent', jsonParser, (req, res, next) => {
 router.get('/comments/child', jsonParser, (req, res, next) => {
     if (req.header('auth-token')) {
         authorization.authorizeUser(req, res, () => {
-            console.log('authorized: ' + req.user._id) 
             next()
         })
     } else {
-        console.log('no auth-token found')
         req.user = { _id: undefined } //not the best work around but makes the code more readable
         next()
     }
