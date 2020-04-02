@@ -1,4 +1,4 @@
-const mysqlHelper = require('../MySQLHelper.js')
+const sqlQuery = require("../MySQLHelper").sqlQuery;
 
 exports.readComments = function(commentQuery, callback) {
 
@@ -37,11 +37,8 @@ exports.readComments = function(commentQuery, callback) {
         }
     }
 
-    console.log(query)
-    console.log(args)
-    mysqlHelper.sqlQuery(query, args, (err, rows) => {
+    sqlQuery(query, args, (err, rows) => {
         if (err != null) {
-            console.log(args)
             callback(err)
         } else {
             let commentArray = []

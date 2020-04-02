@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken') //used for web token authentication
 const getRouter = require('./get.js')
 const postRouter = require('./post.js')
 const authenticationRouter = require('./authorization.js')
+const comment_ms = require('./comment-microservice/')
 const mysqlHelper = require('./MySQLHelper.js')
 var cors = require('cors') //THIS IS SUPPOSED TO SOLVE CORS ISSUE BUT IS NOT WORKING - LOOK MORE INTO THIS
 

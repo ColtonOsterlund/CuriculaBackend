@@ -3,7 +3,7 @@
 const express = require('express')
 var bodyParser = require('body-parser')
 var authorization = require('./authorization.js')
-const em = require('./commentMS/event-manager.js')
+const em = require('./comment-microservice/').eventmanager
 var cors = require('cors')
 
 const router = express.Router()
