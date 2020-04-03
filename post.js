@@ -5,6 +5,7 @@ var bodyParser = require('body-parser')
 var authorization = require('./authorization.js')
 const em = require('./comment-microservice/').eventmanager
 const uuid = require('uuid')
+const mysqlHelper = require('./MySQLHelper.js')
 var cors = require('cors')
 
 const router = express.Router()
