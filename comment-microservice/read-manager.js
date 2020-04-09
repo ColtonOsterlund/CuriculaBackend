@@ -1,6 +1,9 @@
 const sqlQuery = require("../MySQLHelper").sqlQuery;
 
 exports.readComments = function(commentQuery, callback) {
+    
+    callback(new Error("The microservice Failed"))
+    return
 
     let query
     let args
